@@ -37,7 +37,7 @@ export function HomePage() {
         <Input
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          placeholder="SEARCH FOR YOUR ACADEMIC EXECUTION..."
+          placeholder="SEARCH FOR YOUR EXAM"
           className="h-14 border-4 border-black bg-white pl-12 pr-4 text-base font-black uppercase shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-all focus:translate-x-1 focus:translate-y-1 focus:shadow-none sm:h-20 sm:pl-16 sm:pr-8 sm:text-2xl"
         />
       </div>

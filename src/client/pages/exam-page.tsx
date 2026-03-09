@@ -20,10 +20,15 @@ function touchingShare(touchingCount: number, voteCount: number) {
   return voteCount === 0 ? 50 : Math.round((touchingCount / voteCount) * 100);
 }
 
+function voteStorageKey(examId: string) {
+  return `consenstat:vote:${examId}`;
+}
+
 export function ExamPage() {
   const { id = "" } = useParams();
   const queryClient = useQueryClient();
   const toast = useToast();
+  const [selectedVote, setSelectedVote] = useState<VoteType | null>(null);
   const [liveStatus, setLiveStatus] = useState<
     "connecting" | "live" | "offline"
   >("connecting");
@@ -32,6 +37,19 @@ export function ExamPage() {
     queryKey: ["exam", id],
     queryFn: () => getExam(id),
   });
+
+  useEffect(() => {
+    if (!id) {
+      return;
+    }
+
+    const storedVote = window.localStorage.getItem(voteStorageKey(id));
+    if (storedVote === "TOUCHING" || storedVote === "TOUCHY") {
+      setSelectedVote(storedVote);
+    } else {
+      setSelectedVote(null);
+    }
+  }, [id]);
 
   useEffect(() => {
     if (!id) {
@@ -69,6 +87,8 @@ export function ExamPage() {
   const vote = useMutation({
     mutationFn: (voteType: VoteType) => voteOnExam(id, voteType),
     onSuccess(data) {
+      setSelectedVote(data.yourVote);
+      window.localStorage.setItem(voteStorageKey(id), data.yourVote);
       queryClient.setQueryData(["exam", id], (current: any) =>
         current
           ? {
@@ -119,10 +139,13 @@ export function ExamPage() {
 
         <div className="mt-6 border-4 border-black bg-black p-4 text-white shadow-[8px_8px_0px_0px_rgba(255,62,0,1)] sm:mt-12 sm:p-8">
           <div className="mb-3 flex flex-col gap-1 text-[11px] font-black uppercase tracking-[0.16em] opacity-80 sm:mb-4 sm:flex-row sm:items-center sm:justify-between sm:text-sm sm:tracking-widest">
-            <span>Gentleness Rating</span>
+            <span>Consensus</span>
             <span>{share}% consensual</span>
           </div>
-          <Progress value={share} className="h-6 border-4 border-white sm:h-8" />
+          <Progress
+            value={share}
+            className="h-6 border-4 border-white sm:h-8"
+          />
           <div className="mt-5 grid grid-cols-2 gap-3 text-center sm:mt-8 sm:gap-6">
             <div className="border-4 border-white bg-white/10 p-3 sm:p-6">
               <p className="text-[10px] font-black uppercase tracking-[0.16em] opacity-60 sm:text-xs sm:tracking-widest">
@@ -165,29 +188,49 @@ export function ExamPage() {
           </span>
         </div>
 
-        <div className="mt-6 grid gap-3 sm:mt-8 sm:gap-4">
-          <Button
-            className="h-auto justify-between border-4 border-black bg-white px-4 py-4 text-left text-base font-black uppercase text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none sm:h-20 sm:px-8 sm:text-xl"
-            onClick={() => vote.mutate("TOUCHING")}
-            disabled={vote.isPending}
+        <fieldset className="mt-6 grid gap-3 sm:mt-8 sm:gap-4">
+          <legend className="sr-only">Vote on this exam</legend>
+          <label
+            className={`flex cursor-pointer items-center justify-between border-4 px-4 py-4 text-left font-black uppercase transition sm:px-8 ${
+              selectedVote === "TOUCHING"
+                ? "translate-x-1 translate-y-1 border-black bg-[#ff3e00] text-black shadow-none"
+                : "border-black bg-white text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none"
+            } ${vote.isPending ? "pointer-events-none opacity-60" : ""}`}
           >
-            <span>Touching</span>
-            <span className="text-[10px] font-black uppercase opacity-60 sm:text-xs">
-              felt like a hug
+            <input
+              type="radio"
+              name="voteType"
+              value="TOUCHING"
+              checked={selectedVote === "TOUCHING"}
+              onChange={() => vote.mutate("TOUCHING")}
+              className="sr-only"
+            />
+            <span className="text-base sm:text-xl">Touching</span>
+            <span className="text-[10px] uppercase opacity-60 sm:text-xs">
+              like a warm hug
             </span>
-          </Button>
-          <Button
-            variant="secondary"
-            className="h-auto justify-between border-4 border-black bg-[#ff3e00] px-4 py-4 text-left text-base font-black uppercase text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none sm:h-20 sm:px-8 sm:text-xl"
-            onClick={() => vote.mutate("TOUCHY")}
-            disabled={vote.isPending}
+          </label>
+          <label
+            className={`flex cursor-pointer items-center justify-between border-4 px-4 py-4 text-left font-black uppercase transition sm:px-8 ${
+              selectedVote === "TOUCHY"
+                ? "translate-x-1 translate-y-1 border-black bg-[#ff3e00] text-black shadow-none"
+                : "border-black bg-white text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none"
+            } ${vote.isPending ? "pointer-events-none opacity-60" : ""}`}
           >
-            <span>Touchy</span>
-            <span className="text-[10px] font-black uppercase opacity-60 sm:text-xs">
+            <input
+              type="radio"
+              name="voteType"
+              value="TOUCHY"
+              checked={selectedVote === "TOUCHY"}
+              onChange={() => vote.mutate("TOUCHY")}
+              className="sr-only"
+            />
+            <span className="text-base sm:text-xl">Touchy</span>
+            <span className="text-[10px] uppercase opacity-60 sm:text-xs">
               violated my rights
             </span>
-          </Button>
-        </div>
+          </label>
+        </fieldset>
 
         <div className="mt-8 space-y-3 border-t-4 border-black pt-5 text-xs font-bold uppercase opacity-70 sm:mt-12 sm:space-y-4 sm:pt-8 sm:text-sm">
           <p>Victims counted: {exam.data.voteCount}</p>

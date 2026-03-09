@@ -102,7 +102,10 @@ export function CreatePage() {
             </h1>
           </div>
 
-          <form className="mt-7 space-y-6 sm:mt-10 sm:space-y-8" onSubmit={handleSubmit}>
+          <form
+            className="mt-7 space-y-6 sm:mt-10 sm:space-y-8"
+            onSubmit={handleSubmit}
+          >
             <div className="grid gap-5 min-[840px]:grid-cols-2">
               <label className="space-y-3">
                 <span className="block text-[11px] font-black uppercase tracking-[0.16em] sm:text-sm">
