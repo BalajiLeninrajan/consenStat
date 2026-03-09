@@ -1,28 +1,51 @@
+@import url('https://fonts.googleapis.com/css2?family=Bungee&family=Manrope:wght@200..800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  color: #0f172a;
-  background:
-    radial-gradient(circle at top left, rgba(250, 204, 21, 0.35), transparent 30%),
-    radial-gradient(circle at top right, rgba(15, 118, 110, 0.18), transparent 26%),
-    linear-gradient(180deg, #fff8ed 0%, #f8fafc 55%, #eef2ff 100%);
-  font-family: "Manrope", sans-serif;
-}
+@layer base {
+  :root {
+    --bg-color: #e5e5e5;
+    --card-bg: #ffffff;
+    --text-color: #000000;
+    --accent-color: #ff3e00;
+    --border-color: #000000;
+    --header-radius: 0px;
+    --card-radius: 0px;
+    --font-display: 'Bungee', cursive;
+    --border-width: 4px;
+  }
 
-body {
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-#root {
-  min-height: 100vh;
+  body {
+    @apply bg-[var(--bg-color)] text-[var(--text-color)] font-bold uppercase;
+  }
 }
 
 .grid-bg {
-  background-image:
-    linear-gradient(rgba(15, 23, 42, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(15, 23, 42, 0.04) 1px, transparent 1px);
-  background-size: 28px 28px;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  min-height: 100vh;
+}
+
+.theme-card {
+  background-color: var(--card-bg);
+  border: var(--border-width) solid var(--border-color);
+  border-radius: var(--card-radius);
+  box-shadow: 8px 8px 0px 0px var(--border-color);
+}
+
+.theme-header {
+  background-color: var(--card-bg);
+  border: var(--border-width) solid var(--border-color);
+  border-radius: var(--header-radius);
+  box-shadow: 8px 8px 0px 0px var(--border-color);
+}
+
+.card-shadow {
+  box-shadow: 8px 8px 0px 0px var(--border-color);
+}
+
+.font-theme-display {
+  font-family: var(--font-display);
 }
