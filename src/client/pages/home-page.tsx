@@ -18,10 +18,15 @@ export function HomePage() {
   const recent = useQuery({
     queryKey: ["recent-exams"],
     queryFn: getRecentExams,
+    refetchInterval: 60000,
+    refetchIntervalInBackground: true,
   });
   const search = useQuery({
     queryKey: ["search-exams", query],
     queryFn: () => searchExams(query),
+    enabled: query.trim().length > 0,
+    refetchInterval: query.trim().length > 0 ? 60000 : false,
+    refetchIntervalInBackground: true,
   });
 
   const items = query.trim() ? (search.data ?? []) : (recent.data ?? []);

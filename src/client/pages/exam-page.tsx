@@ -2,7 +2,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getExam, voteOnExam, type VoteType } from "../lib/api";
-import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 import { Progress } from "../ui/progress";
 import { useToast } from "../ui/toast";
@@ -56,31 +55,63 @@ export function ExamPage() {
       return;
     }
 
-    const protocol = window.location.protocol === "https:" ? "wss" : "ws";
-    const socket = new WebSocket(
-      `${protocol}://${window.location.host}/api/exams/${id}/ws`,
-    );
+    let socket: WebSocket | null = null;
+    let reconnectTimer: number | null = null;
+    let isDisposed = false;
 
-    socket.onopen = () => setLiveStatus("live");
-    socket.onclose = () => setLiveStatus("offline");
-    socket.onerror = () => setLiveStatus("offline");
-    socket.onmessage = (event) => {
-      const message = JSON.parse(event.data) as LiveMessage;
-      queryClient.setQueryData(["exam", id], (current: any) =>
-        current
-          ? {
-              ...current,
-              touchingCount: message.touchingCount,
-              touchyCount: message.touchyCount,
-              voteCount: message.voteCount,
-              lastVotedAt: message.lastVotedAt,
-            }
-          : current,
-      );
+    const protocol = window.location.protocol === "https:" ? "wss" : "ws";
+    const socketUrl = `${protocol}://${window.location.host}/api/exams/${id}/ws`;
+
+    const connect = () => {
+      if (isDisposed) {
+        return;
+      }
+
+      setLiveStatus("connecting");
+      socket = new WebSocket(socketUrl);
+
+      socket.onopen = () => {
+        setLiveStatus("live");
+        queryClient.invalidateQueries({ queryKey: ["exam", id] });
+      };
+
+      socket.onmessage = (event) => {
+        const message = JSON.parse(event.data) as LiveMessage;
+        queryClient.setQueryData(["exam", id], (current: any) =>
+          current
+            ? {
+                ...current,
+                touchingCount: message.touchingCount,
+                touchyCount: message.touchyCount,
+                voteCount: message.voteCount,
+                lastVotedAt: message.lastVotedAt,
+              }
+            : current,
+        );
+      };
+
+      socket.onerror = () => {
+        socket?.close();
+      };
+
+      socket.onclose = () => {
+        setLiveStatus("offline");
+        queryClient.invalidateQueries({ queryKey: ["exam", id] });
+
+        if (!isDisposed) {
+          reconnectTimer = window.setTimeout(connect, 1000);
+        }
+      };
     };
 
+    connect();
+
     return () => {
-      socket.close();
+      isDisposed = true;
+      if (reconnectTimer !== null) {
+        window.clearTimeout(reconnectTimer);
+      }
+      socket?.close();
     };
   }, [id, queryClient]);
 

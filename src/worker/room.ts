@@ -2,7 +2,6 @@ import { DurableObject } from "cloudflare:workers";
 import type { TallyPayload } from "./types";
 
 export class ExamRoom extends DurableObject {
-  private sockets = new Set<WebSocket>();
   private lastPayload: TallyPayload | null = null;
 
   async fetch(request: Request) {
@@ -19,7 +18,7 @@ export class ExamRoom extends DurableObject {
       const payload = (await request.json()) as TallyPayload;
       this.lastPayload = payload;
       const message = JSON.stringify(payload);
-      for (const socket of this.sockets) {
+      for (const socket of this.ctx.getWebSockets()) {
         socket.send(message);
       }
       return new Response(null, { status: 204 });
@@ -36,16 +35,11 @@ export class ExamRoom extends DurableObject {
 
   webSocketMessage(_ws: WebSocket, _message: string | ArrayBuffer) {}
 
-  webSocketClose(ws: WebSocket) {
-    this.sockets.delete(ws);
-  }
+  webSocketClose(_ws: WebSocket) {}
 
-  webSocketError(ws: WebSocket) {
-    this.sockets.delete(ws);
-  }
+  webSocketError(_ws: WebSocket) {}
 
   webSocketOpen(ws: WebSocket) {
-    this.sockets.add(ws);
     if (this.lastPayload) {
       ws.send(JSON.stringify(this.lastPayload));
     }

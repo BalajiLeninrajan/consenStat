@@ -9,7 +9,7 @@ binding = "ASSETS"
 [[d1_databases]]
 binding = "DB"
 database_name = "consenstat"
-database_id = "local-consenstat"
+database_id = "46c43899-821a-4582-8f43-aeb1e8ee4b26"
 
 [[durable_objects.bindings]]
 name = "EXAM_ROOMS"
