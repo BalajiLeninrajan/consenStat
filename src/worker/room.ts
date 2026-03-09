@@ -1,3 +1,4 @@
+import { DurableObject } from "cloudflare:workers";
 import type { TallyPayload } from "./types";
 
 export class ExamRoom extends DurableObject {
