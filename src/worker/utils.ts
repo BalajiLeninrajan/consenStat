@@ -16,6 +16,8 @@ export function normalizeText(input: string) {
   return input
     .trim()
     .toLowerCase()
+    .replace(/([a-z]+)(\d+)/g, "$1 $2")
+    .replace(/(\d+)([a-z]+)/g, "$1 $2")
     .replace(/[^\w\s]/g, " ")
     .replace(/\s+/g, " ");
 }
