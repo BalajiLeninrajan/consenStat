@@ -96,20 +96,18 @@ export function HomePage() {
                 SCANNING FOR VICTIMS...
               </p>
             )}
-            {items.length === 0 &&
-              !recent.isLoading &&
-              !search.isLoading && (
-                <Card className="theme-card card-shadow col-span-full border-4 border-black bg-white p-6 sm:p-8">
-                  <p className="text-xl font-black uppercase sm:text-2xl">
-                    No suffering detected. Be the first to complain.
-                  </p>
-                  <Link to="/create" className="mt-6 inline-block">
-                    <Button className="border-4 border-black bg-[var(--accent-color)] px-6 py-3 text-base text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:px-8 sm:py-4 sm:text-xl">
-                      SUBMIT DISASTER
-                    </Button>
-                  </Link>
-                </Card>
-              )}
+            {items.length === 0 && !recent.isLoading && !search.isLoading && (
+              <Card className="theme-card card-shadow col-span-full border-4 border-black bg-white p-6 sm:p-8">
+                <p className="text-xl font-black uppercase sm:text-2xl">
+                  No suffering detected. Be the first to complain.
+                </p>
+                <Link to="/create" className="mt-6 inline-block">
+                  <Button className="border-4 border-black bg-[var(--accent-color)] px-6 py-3 text-base text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:px-8 sm:py-4 sm:text-xl">
+                    SUBMIT DISASTER
+                  </Button>
+                </Link>
+              </Card>
+            )}
             {visibleItems.map((exam) => {
               const share = voteShare(exam.touchingCount, exam.voteCount);
               return (
@@ -156,7 +154,7 @@ export function HomePage() {
         <aside className="order-last space-y-5 lg:order-none lg:space-y-8">
           <Card className="theme-card card-shadow border-4 border-black bg-black p-6 text-[var(--accent-text-color)] sm:p-8">
             <h2 className="mb-5 font-theme-display text-xl font-black uppercase tracking-tighter sm:mb-6 sm:text-2xl">
-              Ground rules
+              Fine print
             </h2>
             <ul className="space-y-3 text-xs font-bold uppercase leading-tight text-black sm:space-y-4 sm:text-sm">
               <li className="flex gap-3">
@@ -193,7 +191,7 @@ export function HomePage() {
             </div>
             <p className="text-xs font-bold uppercase leading-tight sm:text-sm">
               A crowd-sourced pulse of Waterloo's academic brutality. Find out
-              if you're the only one who got wrecked, or if it was a collective
+              if you're the only one who got railed, or if it was a collective
               execution.
             </p>
             <Link to="/create" className="mt-6 block sm:mt-8">

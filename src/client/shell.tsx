@@ -38,10 +38,7 @@ export function AppShell() {
           <Outlet />
         </main>
         <footer className="mt-10 border-t-4 border-black py-6 text-center text-[11px] font-bold uppercase tracking-[0.2em] sm:mt-16 sm:py-10 sm:text-sm sm:tracking-widest">
-          <p>
-            © 2026 ConsenStat. No feelings were spared in the making of this
-            app.
-          </p>
+          <p>© 2026 ConsenStat. Made with hate in Waterloo.</p>
         </footer>
       </div>
     </div>
