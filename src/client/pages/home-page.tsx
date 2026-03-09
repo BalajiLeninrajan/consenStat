@@ -96,7 +96,7 @@ export function HomePage() {
                 SCANNING FOR VICTIMS...
               </p>
             )}
-            {listItems.length === 0 &&
+            {items.length === 0 &&
               !recent.isLoading &&
               !search.isLoading && (
                 <Card className="theme-card card-shadow col-span-full border-4 border-black bg-white p-6 sm:p-8">
