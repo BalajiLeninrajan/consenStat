@@ -177,8 +177,8 @@ export function ExamPage() {
             value={share}
             className="h-6 border-4 border-white sm:h-8"
           />
-          <div className="mt-5 grid grid-cols-2 gap-3 text-center sm:mt-8 sm:gap-6">
-            <div className="border-4 border-white bg-white/10 p-3 sm:p-6">
+          <div className="mt-5 grid grid-cols-[1fr_2px_1fr] items-stretch gap-0 text-center sm:mt-8">
+            <div className="p-3 sm:p-6">
               <p className="text-[10px] font-black uppercase tracking-[0.16em] opacity-60 sm:text-xs sm:tracking-widest">
                 Fair
               </p>
@@ -186,7 +186,8 @@ export function ExamPage() {
                 {exam.data.touchingCount}
               </p>
             </div>
-            <div className="border-4 border-white bg-white/10 p-3 sm:p-6">
+            <div className="bg-white/50" aria-hidden />
+            <div className="p-3 sm:p-6">
               <p className="text-[10px] font-black uppercase tracking-[0.16em] opacity-60 sm:text-xs sm:tracking-widest">
                 Fucked
               </p>
