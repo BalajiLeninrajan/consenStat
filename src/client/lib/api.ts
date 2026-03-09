@@ -22,7 +22,6 @@ export type ExamSummary = {
   id: number;
   examName: string;
   courseCode: string;
-  courseName: string;
   termLabel: string;
   touchingCount: number;
   touchyCount: number;
@@ -74,9 +73,10 @@ export function getExam(id: string) {
 }
 
 export function duplicateCheck(payload: {
-  courseCode: string;
-  courseName: string;
-  term: string;
+  faculty: string;
+  courseNumber: string;
+  termSeason: "fall" | "spring" | "winter";
+  termYear: number;
   examName: string;
 }) {
   return request<DuplicateResponse>("/api/exams/duplicate-check", {
@@ -87,9 +87,10 @@ export function duplicateCheck(payload: {
 }
 
 export function createExam(payload: {
-  courseCode: string;
-  courseName: string;
-  term: string;
+  faculty: string;
+  courseNumber: string;
+  termSeason: "fall" | "spring" | "winter";
+  termYear: number;
   examName: string;
 }) {
   return request<{ id: number }>("/api/exams", {

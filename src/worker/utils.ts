@@ -1,7 +1,15 @@
 const TERM_SEASONS = ["winter", "spring", "fall"] as const;
 
-export function normalizeCourseCode(input: string) {
-  return input.trim().toUpperCase().replace(/\s+/g, " ");
+export function normalizeFaculty(input: string) {
+  return input.trim().toUpperCase().replace(/[^A-Z]/g, "");
+}
+
+export function normalizeCourseNumber(input: string) {
+  return input.trim().toUpperCase().replace(/\s+/g, "");
+}
+
+export function formatCourseCode(faculty: string, courseNumber: string) {
+  return `${faculty} ${courseNumber}`;
 }
 
 export function normalizeText(input: string) {
@@ -12,22 +20,19 @@ export function normalizeText(input: string) {
     .replace(/\s+/g, " ");
 }
 
-export function parseTerm(input: string) {
-  const cleaned = input.trim().replace(/\s+/g, " ");
-  const match = cleaned.match(/^(winter|spring|fall)\s+(\d{4})$/i);
-  if (!match) {
-    throw new Error("Term must look like Fall 2026");
-  }
-
-  const season = match[1].toLowerCase() as (typeof TERM_SEASONS)[number];
+export function parseTerm(seasonInput: string, yearInput: number) {
+  const season = seasonInput.trim().toLowerCase() as (typeof TERM_SEASONS)[number];
   if (!TERM_SEASONS.includes(season)) {
     throw new Error("Unsupported term season");
+  }
+  if (!Number.isInteger(yearInput) || yearInput < 2020 || yearInput > 2100) {
+    throw new Error("Term year must be a valid year");
   }
 
   return {
     season,
-    year: Number(match[2]),
-    label: `${season[0].toUpperCase()}${season.slice(1)} ${match[2]}`,
+    year: yearInput,
+    label: `${season[0].toUpperCase()}${season.slice(1)} ${yearInput}`,
   };
 }
 

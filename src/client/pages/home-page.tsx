@@ -101,7 +101,6 @@ export function HomePage() {
                           {exam.courseCode} • {exam.termLabel}
                         </p>
                         <h3 className="mt-1 text-xl font-bold text-ink">{exam.examName}</h3>
-                        <p className="text-sm text-ink/55">{exam.courseName}</p>
                       </div>
                       <span className="rounded-full bg-coral/10 px-3 py-1 text-xs font-semibold text-coral">
                         {exam.voteCount} votes

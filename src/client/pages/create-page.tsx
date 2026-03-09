@@ -10,18 +10,26 @@ import { Input } from "../ui/input";
 import { useToast } from "../ui/toast";
 
 type FormState = {
-  courseCode: string;
-  courseName: string;
-  term: string;
+  faculty: string;
+  courseNumber: string;
+  termSeason: "fall" | "spring" | "winter";
+  termYear: string;
   examName: string;
 };
 
 const initialState: FormState = {
-  courseCode: "",
-  courseName: "",
-  term: "",
+  faculty: "",
+  courseNumber: "",
+  termSeason: "fall",
+  termYear: new Date().getFullYear().toString(),
   examName: "",
 };
+
+const termSeasons = [
+  { value: "fall", label: "Fall" },
+  { value: "spring", label: "Spring" },
+  { value: "winter", label: "Winter" },
+] as const;
 
 export function CreatePage() {
   const [form, setForm] = useState<FormState>(initialState);
@@ -50,9 +58,9 @@ export function CreatePage() {
 
   const canSubmit = useMemo(
     () =>
-      form.courseCode.trim() &&
-      form.courseName.trim() &&
-      form.term.trim() &&
+      form.faculty.trim() &&
+      form.courseNumber.trim() &&
+      form.termYear.trim() &&
       form.examName.trim(),
     [form],
   );
@@ -67,9 +75,15 @@ export function CreatePage() {
       return;
     }
 
-    const result = await duplicateMutation.mutateAsync(form);
+    const result = await duplicateMutation.mutateAsync({
+      ...form,
+      termYear: Number(form.termYear),
+    });
     if (result.decision === "ok") {
-      createMutation.mutate(form);
+      createMutation.mutate({
+        ...form,
+        termYear: Number(form.termYear),
+      });
     }
   }
 
@@ -84,38 +98,67 @@ export function CreatePage() {
             Create a page only if the exam is actually distinct.
           </h1>
           <p className="mt-3 max-w-2xl text-sm text-ink/60">
-            Waterloo only for v1. Use the exact course code and the clearest exam name
-            students will search for later.
+            Waterloo only for v1. Use the faculty and course number students will
+            actually search, then pick the matching term and exam name.
           </p>
         </div>
 
         <form className="space-y-4" onSubmit={handleSubmit}>
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-4 md:grid-cols-3">
             <label className="space-y-2">
-              <span className="text-sm font-semibold text-ink">Course code</span>
+              <span className="text-sm font-semibold text-ink">Faculty</span>
               <Input
-                value={form.courseCode}
-                onChange={(event) => updateField("courseCode", event.target.value.toUpperCase())}
-                placeholder="CS 245"
+                value={form.faculty}
+                onChange={(event) => updateField("faculty", event.target.value.toUpperCase())}
+                placeholder="CS"
               />
             </label>
             <label className="space-y-2">
-              <span className="text-sm font-semibold text-ink">Term</span>
+              <span className="text-sm font-semibold text-ink">Course number</span>
               <Input
-                value={form.term}
-                onChange={(event) => updateField("term", event.target.value)}
-                placeholder="Fall 2026"
+                value={form.courseNumber}
+                onChange={(event) => updateField("courseNumber", event.target.value.toUpperCase())}
+                placeholder="245"
+              />
+            </label>
+            <label className="space-y-2">
+              <span className="text-sm font-semibold text-ink">Year</span>
+              <Input
+                value={form.termYear}
+                onChange={(event) => updateField("termYear", event.target.value)}
+                inputMode="numeric"
+                placeholder="2026"
               />
             </label>
           </div>
-          <label className="space-y-2">
-            <span className="text-sm font-semibold text-ink">Course name</span>
-            <Input
-              value={form.courseName}
-              onChange={(event) => updateField("courseName", event.target.value)}
-              placeholder="Linear Algebra 2"
-            />
-          </label>
+          <fieldset className="space-y-3">
+            <legend className="text-sm font-semibold text-ink">Term</legend>
+            <div className="grid gap-3 sm:grid-cols-3">
+              {termSeasons.map((season) => {
+                const active = form.termSeason === season.value;
+                return (
+                  <label
+                    key={season.value}
+                    className={`cursor-pointer rounded-2xl border px-4 py-3 text-sm font-semibold transition ${
+                      active
+                        ? "border-lagoon bg-lagoon/10 text-lagoon"
+                        : "border-ink/10 bg-white/70 text-ink/65"
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="termSeason"
+                      value={season.value}
+                      checked={active}
+                      onChange={() => updateField("termSeason", season.value)}
+                      className="sr-only"
+                    />
+                    {season.label}
+                  </label>
+                );
+              })}
+            </div>
+          </fieldset>
           <label className="space-y-2">
             <span className="text-sm font-semibold text-ink">Exam name</span>
             <Input
@@ -180,7 +223,10 @@ export function CreatePage() {
               <Button
                 onClick={() => {
                   setShowDialog(false);
-                  createMutation.mutate(form);
+                  createMutation.mutate({
+                    ...form,
+                    termYear: Number(form.termYear),
+                  });
                 }}
               >
                 Create anyway

@@ -1,7 +1,9 @@
 CREATE TABLE IF NOT EXISTS courses (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
+  faculty TEXT NOT NULL,
+  course_number TEXT NOT NULL,
   code TEXT NOT NULL UNIQUE,
-  name TEXT NOT NULL
+  UNIQUE(faculty, course_number)
 );
 
 CREATE TABLE IF NOT EXISTS terms (

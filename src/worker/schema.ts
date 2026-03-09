@@ -1,9 +1,10 @@
 import { z } from "zod";
 
 export const examInputSchema = z.object({
-  courseCode: z.string().min(2).max(20),
-  courseName: z.string().min(2).max(120),
-  term: z.string().min(6).max(20),
+  faculty: z.string().min(2).max(10),
+  courseNumber: z.string().min(2).max(10),
+  termSeason: z.enum(["fall", "spring", "winter"]),
+  termYear: z.coerce.number().int().min(2020).max(2100),
   examName: z.string().min(2).max(120),
 });
 

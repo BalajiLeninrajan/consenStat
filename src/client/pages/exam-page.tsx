@@ -104,7 +104,6 @@ export function ExamPage() {
         <h1 className="mt-2 font-display text-5xl font-bold tracking-tight text-ink">
           {exam.data.examName}
         </h1>
-        <p className="mt-2 text-base text-ink/60">{exam.data.courseName}</p>
 
         <div className="mt-8 rounded-[1.75rem] bg-ink p-6 text-white">
           <div className="mb-3 flex items-center justify-between text-xs font-semibold uppercase tracking-[0.18em] text-white/60">

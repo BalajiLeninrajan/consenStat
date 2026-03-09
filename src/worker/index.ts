@@ -3,8 +3,10 @@ import { ExamRoom } from "./room";
 import { examInputSchema, voteSchema } from "./schema";
 import type { Bindings, TallyPayload, VoteType } from "./types";
 import {
+  formatCourseCode,
   json,
-  normalizeCourseCode,
+  normalizeCourseNumber,
+  normalizeFaculty,
   normalizeText,
   parseCookie,
   parseTerm,
@@ -28,7 +30,6 @@ app.get("/api/exams/recent", async (c) => {
       exams.exam_name,
       exams.created_at,
       courses.code AS course_code,
-      courses.name AS course_name,
       terms.label AS term_label,
       COALESCE(exam_stats.touching_count, 0) AS touching_count,
       COALESCE(exam_stats.touchy_count, 0) AS touchy_count,
@@ -56,7 +57,6 @@ app.get("/api/exams/search", async (c) => {
             exams.exam_name,
             exams.created_at,
             courses.code AS course_code,
-            courses.name AS course_name,
             terms.label AS term_label,
             COALESCE(exam_stats.touching_count, 0) AS touching_count,
             COALESCE(exam_stats.touchy_count, 0) AS touchy_count,
@@ -75,7 +75,6 @@ app.get("/api/exams/search", async (c) => {
             exams.exam_name,
             exams.created_at,
             courses.code AS course_code,
-            courses.name AS course_name,
             terms.label AS term_label,
             COALESCE(exam_stats.touching_count, 0) AS touching_count,
             COALESCE(exam_stats.touchy_count, 0) AS touchy_count,
@@ -86,7 +85,8 @@ app.get("/api/exams/search", async (c) => {
           JOIN terms ON terms.id = exams.term_id
           LEFT JOIN exam_stats ON exam_stats.exam_id = exams.id
           WHERE lower(courses.code) LIKE ?1
-             OR lower(courses.name) LIKE ?1
+             OR lower(courses.faculty) LIKE ?1
+             OR lower(courses.course_number) LIKE ?1
              OR lower(exams.exam_name) LIKE ?1
              OR lower(terms.label) LIKE ?1
           ORDER BY exam_stats.last_voted_at DESC NULLS LAST, exams.created_at DESC
@@ -105,7 +105,6 @@ app.get("/api/exams/:id", async (c) => {
       exams.exam_name,
       exams.created_at,
       courses.code AS course_code,
-      courses.name AS course_name,
       terms.label AS term_label,
       COALESCE(exam_stats.touching_count, 0) AS touching_count,
       COALESCE(exam_stats.touchy_count, 0) AS touchy_count,
@@ -129,8 +128,10 @@ app.get("/api/exams/:id", async (c) => {
 
 app.post("/api/exams/duplicate-check", async (c) => {
   const payload = examInputSchema.parse(await c.req.json());
-  const courseCode = normalizeCourseCode(payload.courseCode);
-  const term = parseTerm(payload.term);
+  const faculty = normalizeFaculty(payload.faculty);
+  const courseNumber = normalizeCourseNumber(payload.courseNumber);
+  const courseCode = formatCourseCode(faculty, courseNumber);
+  const term = parseTerm(payload.termSeason, payload.termYear);
   const examNameNormalized = normalizeText(payload.examName);
 
   const candidates = await c.env.DB.prepare(
@@ -196,9 +197,10 @@ app.post("/api/exams/duplicate-check", async (c) => {
 
 app.post("/api/exams", async (c) => {
   const payload = examInputSchema.parse(await c.req.json());
-  const courseCode = normalizeCourseCode(payload.courseCode);
-  const courseName = payload.courseName.trim();
-  const term = parseTerm(payload.term);
+  const faculty = normalizeFaculty(payload.faculty);
+  const courseNumber = normalizeCourseNumber(payload.courseNumber);
+  const courseCode = formatCourseCode(faculty, courseNumber);
+  const term = parseTerm(payload.termSeason, payload.termYear);
   const examName = payload.examName.trim();
   const examNameNormalized = normalizeText(examName);
 
@@ -218,10 +220,10 @@ app.post("/api/exams", async (c) => {
 
   await c.env.DB.batch([
     c.env.DB.prepare(
-      `INSERT INTO courses (code, name)
-       VALUES (?1, ?2)
-       ON CONFLICT(code) DO UPDATE SET name = excluded.name`,
-    ).bind(courseCode, courseName),
+      `INSERT INTO courses (faculty, course_number, code)
+       VALUES (?1, ?2, ?3)
+       ON CONFLICT(faculty, course_number) DO UPDATE SET code = excluded.code`,
+    ).bind(faculty, courseNumber, courseCode),
     c.env.DB.prepare(
       `INSERT INTO terms (year, season, label)
        VALUES (?1, ?2, ?3)
@@ -427,7 +429,6 @@ function mapExamRow(row: Record<string, unknown>) {
     id: Number(row.id),
     examName: String(row.exam_name),
     courseCode: String(row.course_code),
-    courseName: String(row.course_name),
     termLabel: String(row.term_label),
     touchingCount: Number(row.touching_count ?? 0),
     touchyCount: Number(row.touchy_count ?? 0),
