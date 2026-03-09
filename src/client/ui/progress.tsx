@@ -10,7 +10,7 @@ export function Progress({
   return (
     <div className={cn("h-6 overflow-hidden border-4 border-black bg-white", className)}>
       <div
-        className="h-full bg-[#ff3e00] transition-all duration-500"
+        className="h-full bg-[var(--accent-color)] transition-all duration-500"
         style={{ width: `${Math.max(0, Math.min(100, value))}%` }}
       />
     </div>

@@ -27,7 +27,7 @@ export function AppShell() {
             </Badge>
             {location.pathname !== "/create" && (
               <Link to="/create">
-                <Button className="border-2 border-black bg-[#ff3e00] px-2 py-1 text-sm text-white hover:translate-x-1 hover:translate-y-1 hover:shadow-none sm:text-base">
+                <Button className="border-2 border-black bg-[var(--accent-color)] px-2 py-1 text-sm text-black hover:translate-x-1 hover:translate-y-1 hover:shadow-none sm:text-base">
                   List new exam
                 </Button>
               </Link>

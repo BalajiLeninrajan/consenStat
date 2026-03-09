@@ -38,7 +38,7 @@ export function ToastProvider({ children }: PropsWithChildren) {
         {toasts.map((toast) => (
           <div
             key={toast.id}
-            className="animate-in slide-in-from-right border-4 border-black bg-[#ff3e00] px-4 py-3 text-sm font-black uppercase text-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] sm:px-8 sm:py-4 sm:text-lg sm:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]"
+            className="animate-in slide-in-from-right border-4 border-black bg-[var(--accent-color)] px-4 py-3 text-sm font-black uppercase text-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] sm:px-8 sm:py-4 sm:text-lg sm:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]"
           >
             {toast.message}
           </div>

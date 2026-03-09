@@ -91,10 +91,10 @@ export function CreatePage() {
     <>
       <Card className="relative mx-auto max-w-[62rem] overflow-hidden border-4 border-black bg-[#f3f0ea] p-0 shadow-[10px_10px_0px_0px_rgba(0,0,0,1)]">
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.4),transparent_28%)]" />
-        <div className="absolute -right-10 top-10 hidden h-44 w-44 border-4 border-black bg-[#ff3e00] lg:block" />
+        <div className="absolute -right-10 top-10 hidden h-44 w-44 border-4 border-black bg-[var(--accent-color)] lg:block" />
         <div className="relative p-4 sm:p-8 md:p-10">
           <div className="max-w-[50rem]">
-            <p className="text-[11px] font-black uppercase tracking-[0.22em] text-[#ff3e00] sm:text-sm">
+            <p className="text-[11px] font-black uppercase tracking-[0.22em] text-[var(--accent-text-color)] sm:text-sm">
               New Submission
             </p>
             <h1 className="mt-3 max-w-[42rem] font-theme-display text-[1.85rem] font-black uppercase leading-[0.92] tracking-[-0.05em] sm:mt-4 sm:text-[3.1rem] md:text-[3.9rem]">
@@ -164,7 +164,7 @@ export function CreatePage() {
                       key={season.value}
                       className={`flex h-12 cursor-pointer items-center justify-center border-4 text-center text-base font-black uppercase transition sm:h-14 sm:text-lg ${
                         active
-                          ? "translate-x-[4px] translate-y-[4px] border-black bg-[#ff4a00] text-black shadow-none"
+                          ? "translate-x-[4px] translate-y-[4px] border-black bg-[var(--accent-color)] text-black shadow-none"
                           : "border-black bg-white text-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:bg-black/5"
                       }`}
                     >
@@ -213,7 +213,7 @@ export function CreatePage() {
                     duplicateMutation.isPending ||
                     createMutation.isPending
                   }
-                  className="h-12 w-full border-4 border-black bg-[#f29b7e] px-6 text-base text-black shadow-[6px_6px_0px_0px_rgba(0,0,0,0.45)] sm:h-14 sm:w-auto sm:min-w-64 sm:px-8 sm:text-xl"
+                  className="h-12 w-full border-4 border-black bg-[var(--accent-color)] px-6 text-base text-black shadow-[6px_6px_0px_0px_rgba(0,0,0,0.45)] sm:h-14 sm:w-auto sm:min-w-64 sm:px-8 sm:text-xl"
                 >
                   {createMutation.isPending ? "Logging..." : "Commit Exam"}
                 </Button>
@@ -262,7 +262,7 @@ export function CreatePage() {
                   <p className="text-xs font-bold uppercase opacity-60 sm:text-sm">
                     {candidate.termLabel}
                   </p>
-                  <p className="mt-2 text-[11px] font-black uppercase tracking-widest text-[#ff3e00] sm:text-xs">
+                  <p className="mt-2 text-[11px] font-black uppercase tracking-widest text-[var(--accent-text-color)] sm:text-xs">
                     {candidate.matchType} • {Math.round(candidate.score * 100)}%
                     Match
                   </p>
@@ -280,7 +280,7 @@ export function CreatePage() {
             </Button>
             {duplicates?.decision === "warn" && (
               <Button
-                className="border-4 border-black bg-[#ff3e00] px-6 py-3 text-sm text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:text-base"
+                className="border-4 border-black bg-[var(--accent-color)] px-6 py-3 text-sm text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:text-base"
                 onClick={() => {
                   setShowDialog(false);
                   createMutation.mutate({

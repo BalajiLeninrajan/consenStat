@@ -117,8 +117,8 @@ export function ExamPage() {
 
   if (exam.error || !exam.data) {
     return (
-      <Card className="theme-card card-shadow border-[#ff3e00] p-5 sm:p-8">
-        <p className="text-lg font-black uppercase text-[#ff3e00] sm:text-xl">
+      <Card className="theme-card card-shadow border-[var(--accent-color)] p-5 sm:p-8">
+        <p className="text-lg font-black uppercase text-[var(--accent-text-color)] sm:text-xl">
           This exam is a ghost. Like your social life.
         </p>
       </Card>
@@ -130,14 +130,14 @@ export function ExamPage() {
   return (
     <div className="grid gap-5 sm:gap-8 lg:grid-cols-[1.15fr_0.85fr]">
       <Card className="theme-card card-shadow bg-white p-5 sm:p-8">
-        <p className="text-[11px] font-black uppercase tracking-[0.16em] text-[#ff3e00] sm:text-sm sm:tracking-widest">
+        <p className="text-[11px] font-black uppercase tracking-[0.16em] text-[var(--accent-text-color)] sm:text-sm sm:tracking-widest">
           {exam.data.courseCode} • {exam.data.termLabel}
         </p>
         <h1 className="mt-3 font-theme-display text-4xl font-black uppercase leading-[0.9] tracking-tighter sm:mt-4 sm:text-6xl">
           {exam.data.examName}
         </h1>
 
-        <div className="mt-6 border-4 border-black bg-black p-4 text-white shadow-[8px_8px_0px_0px_rgba(255,62,0,1)] sm:mt-12 sm:p-8">
+        <div className="mt-6 border-4 border-black bg-black p-4 text-white shadow-[8px_8px_0px_0px_rgba(253,213,79,1)] sm:mt-12 sm:p-8">
           <div className="mb-3 flex flex-col gap-1 text-[11px] font-black uppercase tracking-[0.16em] opacity-80 sm:mb-4 sm:flex-row sm:items-center sm:justify-between sm:text-sm sm:tracking-widest">
             <span>Consensus</span>
             <span>{share}% consensual</span>
@@ -180,7 +180,7 @@ export function ExamPage() {
           <span
             className={`w-fit border-2 border-black px-3 py-1 text-[11px] font-black uppercase sm:text-xs ${
               liveStatus === "live"
-                ? "bg-[#ff3e00] text-black"
+                ? "bg-[var(--accent-color)] text-black"
                 : "bg-black/10 opacity-50"
             }`}
           >
@@ -193,7 +193,7 @@ export function ExamPage() {
           <label
             className={`flex cursor-pointer items-center justify-between border-4 px-4 py-4 text-left font-black uppercase transition sm:px-8 ${
               selectedVote === "TOUCHING"
-                ? "translate-x-1 translate-y-1 border-black bg-[#ff3e00] text-black shadow-none"
+                ? "translate-x-1 translate-y-1 border-black bg-[var(--accent-color)] text-black shadow-none"
                 : "border-black bg-white text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none"
             } ${vote.isPending ? "pointer-events-none opacity-60" : ""}`}
           >
@@ -213,7 +213,7 @@ export function ExamPage() {
           <label
             className={`flex cursor-pointer items-center justify-between border-4 px-4 py-4 text-left font-black uppercase transition sm:px-8 ${
               selectedVote === "TOUCHY"
-                ? "translate-x-1 translate-y-1 border-black bg-[#ff3e00] text-black shadow-none"
+                ? "translate-x-1 translate-y-1 border-black bg-[var(--accent-color)] text-black shadow-none"
                 : "border-black bg-white text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none"
             } ${vote.isPending ? "pointer-events-none opacity-60" : ""}`}
           >

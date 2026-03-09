@@ -46,10 +46,10 @@ export function HomePage() {
         <div className="order-first space-y-5 sm:space-y-8">
           {featured && (
             <Link to={`/exam/${featured.id}`} className="block">
-              <Card className="theme-card card-shadow border-4 border-black bg-[#ff3e00] p-5 text-black transition hover:translate-x-1 hover:translate-y-1 hover:shadow-none sm:p-10">
+              <Card className="theme-card card-shadow border-4 border-black bg-[var(--accent-color)] p-5 text-black transition hover:translate-x-1 hover:translate-y-1 hover:shadow-none sm:p-10">
                 <div className="flex flex-col gap-4 sm:gap-6">
                   <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                    <span className="w-fit border-4 border-black bg-black px-3 py-1 text-[11px] font-black uppercase tracking-[0.18em] text-[#ff3e00] sm:px-4 sm:text-sm sm:tracking-widest">
+                    <span className="w-fit border-4 border-black bg-black px-3 py-1 text-[11px] font-black uppercase tracking-[0.18em] text-[var(--accent-text-color)] sm:px-4 sm:text-sm sm:tracking-widest">
                       LATEST TRAUMA
                     </span>
                     <span className="w-fit border-2 border-black/20 px-3 py-1 text-[11px] font-black uppercase tracking-[0.16em] sm:text-sm sm:tracking-widest">
@@ -99,7 +99,7 @@ export function HomePage() {
                     No suffering detected. Be the first to complain.
                   </p>
                   <Link to="/create" className="mt-6 inline-block">
-                    <Button className="border-4 border-black bg-[#ff3e00] px-6 py-3 text-base text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:px-8 sm:py-4 sm:text-xl">
+                    <Button className="border-4 border-black bg-[var(--accent-color)] px-6 py-3 text-base text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:px-8 sm:py-4 sm:text-xl">
                       SUBMIT DISASTER
                     </Button>
                   </Link>
@@ -112,7 +112,7 @@ export function HomePage() {
                   <article className="theme-card card-shadow flex h-full flex-col justify-between border-4 border-black bg-white p-5 transition hover:translate-x-1 hover:translate-y-1 hover:shadow-none sm:p-6">
                     <div>
                       <div className="mb-4 flex items-start justify-between gap-3">
-                        <p className="text-[11px] font-black uppercase tracking-[0.16em] text-[#ff3e00] sm:text-xs sm:tracking-widest">
+                        <p className="text-[11px] font-black uppercase tracking-[0.16em] text-[var(--accent-text-color)] sm:text-xs sm:tracking-widest">
                           {exam.courseCode} • {exam.termLabel}
                         </p>
                         <span className="shrink-0 bg-black px-2 py-1 text-[9px] font-black uppercase text-white sm:text-[10px]">
@@ -149,13 +149,13 @@ export function HomePage() {
         </div>
 
         <aside className="order-last space-y-5 lg:order-none lg:space-y-8">
-          <Card className="theme-card card-shadow border-4 border-black bg-black p-6 text-[#ff3e00] sm:p-8">
+          <Card className="theme-card card-shadow border-4 border-black bg-black p-6 text-[var(--accent-text-color)] sm:p-8">
             <h2 className="mb-5 font-theme-display text-xl font-black uppercase tracking-tighter sm:mb-6 sm:text-2xl">
               Ground rules
             </h2>
             <ul className="space-y-3 text-xs font-bold uppercase leading-tight text-black sm:space-y-4 sm:text-sm">
               <li className="flex gap-3">
-                <span className="bg-[#ff3e00] text-black px-1 shrink-0">
+                <span className="bg-[var(--accent-color)] text-black px-1 shrink-0">
                   01
                 </span>
                 <span>
@@ -163,13 +163,13 @@ export function HomePage() {
                 </span>
               </li>
               <li className="flex gap-3">
-                <span className="bg-[#ff3e00] text-black px-1 shrink-0">
+                <span className="bg-[var(--accent-color)] text-black px-1 shrink-0">
                   02
                 </span>
                 <span>Votes are anonymous. Your TA won't find you here.</span>
               </li>
               <li className="flex gap-3">
-                <span className="bg-[#ff3e00] text-black px-1 shrink-0">
+                <span className="bg-[var(--accent-color)] text-black px-1 shrink-0">
                   03
                 </span>
                 <span>
@@ -180,7 +180,7 @@ export function HomePage() {
           </Card>
 
           <Card className="theme-card card-shadow border-4 border-black bg-white p-6 sm:p-8">
-            <div className="mb-4 flex items-center gap-3 text-[#ff3e00]">
+            <div className="mb-4 flex items-center gap-3 text-[var(--accent-text-color)]">
               <AlertCircle className="h-5 w-5 sm:h-6 sm:w-6" />
               <h2 className="font-theme-display text-xl font-black uppercase tracking-tighter sm:text-2xl">
                 WHAT IS THIS?
@@ -192,7 +192,7 @@ export function HomePage() {
               execution.
             </p>
             <Link to="/create" className="mt-6 block sm:mt-8">
-              <Button className="w-full border-4 border-black bg-white py-3 text-sm text-black transition-colors hover:bg-[#ff3e00] hover:text-white sm:py-4 sm:text-base">
+              <Button className="w-full border-4 border-black bg-white py-3 text-sm text-black transition-colors hover:bg-[var(--accent-color)] hover:text-black sm:py-4 sm:text-base">
                 LIST NEW EXAM
               </Button>
             </Link>
