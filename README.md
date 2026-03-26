@@ -28,7 +28,6 @@ src/client/        React app
 src/worker/        Cloudflare Worker, API routes, Durable Object logic
 migrations/        D1 schema
 public/            Static assets
-plan.md            Original implementation plan
 wrangler.toml      Worker, D1, Durable Object, and asset bindings
 ```
 
