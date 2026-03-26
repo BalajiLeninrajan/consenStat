@@ -19,7 +19,8 @@ import {
 const app = new Hono<{ Bindings: Bindings }>();
 
 app.onError((error) => {
-  const status = error instanceof Error && error.message === "Not found" ? 404 : 400;
+  const status =
+    error instanceof Error && error.message === "Not found" ? 404 : 400;
   return json({ error: error.message || "Request failed" }, { status });
 });
 
@@ -152,15 +153,20 @@ app.post("/api/exams/duplicate-check", async (c) => {
 
   const scored = candidates.results
     .map((row) => {
-      const score = similarityScore(examNameNormalized, String(row.exam_name_normalized));
-      const isSameTerm = Number(row.year) === term.year && String(row.season) === term.season;
-      const matchType = examNameNormalized === row.exam_name_normalized
-        ? "exact"
-        : isSameTerm && score >= 0.55
-          ? "similar"
-          : !isSameTerm && score >= 0.55
-            ? "cross-term"
-            : null;
+      const score = similarityScore(
+        examNameNormalized,
+        String(row.exam_name_normalized),
+      );
+      const isSameTerm =
+        Number(row.year) === term.year && String(row.season) === term.season;
+      const matchType =
+        examNameNormalized === row.exam_name_normalized
+          ? "exact"
+          : isSameTerm && score >= 0.55
+            ? "similar"
+            : !isSameTerm && score >= 0.55
+              ? "cross-term"
+              : null;
 
       return matchType
         ? {
@@ -174,17 +180,22 @@ app.post("/api/exams/duplicate-check", async (c) => {
         : null;
     })
     .filter(Boolean) as Array<{
-      id: number;
-      examName: string;
-      termLabel: string;
-      matchType: "exact" | "similar" | "cross-term";
-      score: number;
-      isSameTerm: boolean;
-    }>;
+    id: number;
+    examName: string;
+    termLabel: string;
+    matchType: "exact" | "similar" | "cross-term";
+    score: number;
+    isSameTerm: boolean;
+  }>;
 
-  const decision = scored.some((candidate) => candidate.matchType === "exact" && candidate.isSameTerm)
+  const decision = scored.some(
+    (candidate) => candidate.matchType === "exact" && candidate.isSameTerm,
+  )
     ? "block"
-    : scored.some((candidate) => candidate.matchType === "similar" && candidate.isSameTerm)
+    : scored.some(
+          (candidate) =>
+            candidate.matchType === "similar" && candidate.isSameTerm,
+        )
       ? "warn"
       : "ok";
 
@@ -385,7 +396,9 @@ app.post("/api/exams/:id/vote", async (c) => {
 
 app.get("/api/exams/:id/ws", async (c) => {
   const examId = Number(c.req.param("id"));
-  const stub = c.env.EXAM_ROOMS.get(c.env.EXAM_ROOMS.idFromName(String(examId)));
+  const stub = c.env.EXAM_ROOMS.get(
+    c.env.EXAM_ROOMS.idFromName(String(examId)),
+  );
 
   const stats = await c.env.DB.prepare(
     `SELECT touching_count, touchy_count, vote_count, last_voted_at
@@ -417,7 +430,9 @@ app.get("/api/exams/:id/ws", async (c) => {
 app.get("*", (c) => c.env.ASSETS.fetch(c.req.raw));
 
 async function broadcastTally(env: Bindings, payload: TallyPayload) {
-  const stub = env.EXAM_ROOMS.get(env.EXAM_ROOMS.idFromName(String(payload.examId)));
+  const stub = env.EXAM_ROOMS.get(
+    env.EXAM_ROOMS.idFromName(String(payload.examId)),
+  );
   await stub.fetch("https://room/broadcast", {
     method: "POST",
     body: JSON.stringify(payload),

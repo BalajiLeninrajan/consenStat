@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Bungee&family=Manrope:wght@200..800&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Bungee&family=Manrope:wght@200..800&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -14,7 +14,7 @@
     --border-color: #000000;
     --header-radius: 0px;
     --card-radius: 0px;
-    --font-display: 'Bungee', cursive;
+    --font-display: "Bungee", cursive;
     --border-width: 4px;
   }
 

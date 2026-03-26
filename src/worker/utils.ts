@@ -1,7 +1,10 @@
 const TERM_SEASONS = ["winter", "spring", "fall"] as const;
 
 export function normalizeFaculty(input: string) {
-  return input.trim().toUpperCase().replace(/[^A-Z]/g, "");
+  return input
+    .trim()
+    .toUpperCase()
+    .replace(/[^A-Z]/g, "");
 }
 
 export function normalizeCourseNumber(input: string) {
@@ -23,7 +26,9 @@ export function normalizeText(input: string) {
 }
 
 export function parseTerm(seasonInput: string, yearInput: number) {
-  const season = seasonInput.trim().toLowerCase() as (typeof TERM_SEASONS)[number];
+  const season = seasonInput
+    .trim()
+    .toLowerCase() as (typeof TERM_SEASONS)[number];
   if (!TERM_SEASONS.includes(season)) {
     throw new Error("Unsupported term season");
   }
@@ -45,7 +50,9 @@ export function similarityScore(a: string, b: string) {
 
   const aTokens = new Set(a.split(" "));
   const bTokens = new Set(b.split(" "));
-  const intersection = [...aTokens].filter((token) => bTokens.has(token)).length;
+  const intersection = [...aTokens].filter((token) =>
+    bTokens.has(token),
+  ).length;
   const union = new Set([...aTokens, ...bTokens]).size;
   return union === 0 ? 0 : intersection / union;
 }
@@ -75,7 +82,11 @@ async function hmac(secret: string, value: string) {
     false,
     ["sign"],
   );
-  const signature = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(value));
+  const signature = await crypto.subtle.sign(
+    "HMAC",
+    key,
+    new TextEncoder().encode(value),
+  );
   return btoa(String.fromCharCode(...new Uint8Array(signature)));
 }
 
@@ -84,7 +95,10 @@ export async function signCookieValue(secret: string, value: string) {
   return `${value}.${signature}`;
 }
 
-export async function verifyCookieValue(secret: string, signedValue: string | undefined) {
+export async function verifyCookieValue(
+  secret: string,
+  signedValue: string | undefined,
+) {
   if (!signedValue) {
     return null;
   }

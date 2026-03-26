@@ -6,12 +6,7 @@ export function Card({
   className,
 }: PropsWithChildren<{ className?: string }>) {
   return (
-    <section
-      className={cn(
-        "theme-card p-8 shadow-card",
-        className,
-      )}
-    >
+    <section className={cn("theme-card p-8 shadow-card", className)}>
       {children}
     </section>
   );
