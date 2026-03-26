@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, ArrowLeft } from "lucide-react";
 import { FormEvent, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { createExam, duplicateCheck, type DuplicateResponse } from "../lib/api";
@@ -88,8 +88,18 @@ export function CreatePage() {
   }
 
   return (
-    <>
-      <Card className="relative mx-auto max-w-[62rem] overflow-hidden border-4 border-black bg-[#f3f0ea] p-0 shadow-[10px_10px_0px_0px_rgba(0,0,0,1)]">
+    <div className="flex flex-col gap-4 sm:gap-6">
+      <Link
+        to="/"
+        className="group fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center border-4 border-black bg-[var(--accent-color)] text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none sm:static sm:h-auto sm:w-fit sm:border-0 sm:bg-transparent sm:p-0 sm:text-black/60 sm:shadow-none sm:hover:translate-x-0 sm:hover:translate-y-0 sm:hover:text-black"
+      >
+        <ArrowLeft className="h-6 w-6 transition-transform group-hover:-translate-x-1 sm:h-5 sm:w-5" />
+        <span className="sr-only sm:not-sr-only sm:ml-2 sm:text-[11px] sm:font-black sm:uppercase sm:tracking-[0.16em] sm:sm:tracking-widest">
+          Back to list
+        </span>
+      </Link>
+
+      <Card className="relative mx-auto w-full max-w-[62rem] overflow-hidden border-4 border-black bg-[#f3f0ea] p-0 shadow-[10px_10px_0px_0px_rgba(0,0,0,1)]">
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.4),transparent_28%)]" />
         <div className="absolute -right-10 top-10 hidden h-44 w-44 border-4 border-black bg-[var(--accent-color)] lg:block" />
         <div className="relative p-4 sm:p-8 md:p-10">
@@ -295,6 +305,6 @@ export function CreatePage() {
           </div>
         </div>
       </Dialog>
-    </>
+    </div>
   );
 }

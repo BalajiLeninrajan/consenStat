@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { ArrowLeft } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { getExam, voteOnExam, type VoteType } from "../lib/api";
 import { Card } from "../ui/card";
 import { Progress } from "../ui/progress";
@@ -159,7 +160,18 @@ export function ExamPage() {
   const share = touchingShare(exam.data.touchingCount, exam.data.voteCount);
 
   return (
-    <div className="grid gap-5 sm:gap-8 lg:grid-cols-[1.15fr_0.85fr]">
+    <div className="flex flex-col gap-4 sm:gap-6">
+      <Link
+        to="/"
+        className="group fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center border-4 border-black bg-[var(--accent-color)] text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-0.5 hover:translate-y-0.5 hover:shadow-none sm:static sm:h-auto sm:w-fit sm:border-0 sm:bg-transparent sm:p-0 sm:text-black/60 sm:shadow-none sm:hover:translate-x-0 sm:hover:translate-y-0 sm:hover:text-black"
+      >
+        <ArrowLeft className="h-6 w-6 transition-transform group-hover:-translate-x-1 sm:h-5 sm:w-5" />
+        <span className="sr-only sm:not-sr-only sm:ml-2 sm:text-[11px] sm:font-black sm:uppercase sm:tracking-[0.16em] sm:sm:tracking-widest">
+          Back to list
+        </span>
+      </Link>
+
+      <div className="grid gap-5 sm:gap-8 lg:grid-cols-[1.15fr_0.85fr]">
       <Card className="theme-card card-shadow bg-white p-5 sm:p-8">
         <p className="text-[11px] font-black uppercase tracking-[0.16em] text-[var(--accent-text-color)] sm:text-sm sm:tracking-widest">
           {exam.data.courseCode} • {exam.data.termLabel}
@@ -277,6 +289,7 @@ export function ExamPage() {
           )}
         </div>
       </Card>
+    </div>
     </div>
   );
 }
