@@ -62,12 +62,15 @@ export function HomePage() {
                     </span>
                   </div>
                   <div>
-                    <p className="text-sm font-black uppercase tracking-[0.16em] opacity-80 sm:text-xl sm:tracking-widest">
-                      {featured.courseCode} • {featured.termLabel}
-                    </p>
-                    <h2 className="mt-3 font-theme-display text-5xl font-black uppercase leading-[0.9] tracking-tighter sm:mt-2 sm:text-7xl">
-                      {featured.examName}
+                    <h2 className="font-theme-display text-5xl font-black uppercase leading-[0.9] tracking-tighter sm:text-7xl">
+                      <span className="block text-[var(--accent-text-color)] opacity-90">
+                        {featured.courseCode}
+                      </span>
+                      <span className="mt-2 block">{featured.examName}</span>
                     </h2>
+                    <p className="mt-4 text-sm font-black uppercase tracking-[0.16em] opacity-60 sm:text-xl sm:tracking-widest">
+                      {featured.termLabel}
+                    </p>
                   </div>
                   <div className="mt-2 sm:mt-4">
                     <div className="mb-3 flex flex-col gap-1 text-sm font-black uppercase tracking-[0.14em] sm:mb-4 sm:flex-row sm:justify-between sm:text-xl sm:tracking-widest">
@@ -114,17 +117,16 @@ export function HomePage() {
                 <Link key={exam.id} to={`/exam/${exam.id}`} className="block">
                   <article className="theme-card card-shadow flex h-full flex-col justify-between border-4 border-black bg-white p-5 transition hover:translate-x-1 hover:translate-y-1 hover:shadow-none sm:p-6">
                     <div>
-                      <div className="mb-4 flex items-start justify-between gap-3">
-                        <p className="text-[11px] font-black uppercase tracking-[0.16em] text-[var(--accent-text-color)] sm:text-xs sm:tracking-widest">
-                          {exam.courseCode} • {exam.termLabel}
-                        </p>
-                        <span className="shrink-0 bg-black px-2 py-1 text-[9px] font-black uppercase text-white sm:text-[10px]">
-                          {exam.voteCount} VICTIMS
+                      <h3 className="font-black uppercase leading-tight tracking-tight text-xl sm:text-2xl">
+                        <span className="text-[var(--accent-text-color)]">
+                          {exam.courseCode}
                         </span>
-                      </div>
-                      <h3 className="mb-6 text-xl font-black uppercase leading-none tracking-tight sm:text-2xl">
-                        {exam.examName}
+                        <span className="mx-2 opacity-40">•</span>
+                        <span>{exam.examName}</span>
                       </h3>
+                      <p className="mb-6 mt-1 text-[11px] font-black uppercase tracking-[0.16em] opacity-60 sm:text-xs sm:tracking-widest">
+                        {exam.termLabel}
+                      </p>
                     </div>
                     <div className="mt-auto">
                       <div className="mb-2 flex justify-between text-[9px] font-black uppercase sm:text-[10px]">
