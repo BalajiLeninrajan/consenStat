@@ -189,7 +189,7 @@ export function ExamPage() {
             value={share}
             className="h-6 border-4 border-white sm:h-8"
           />
-          <div className="mt-5 grid grid-cols-[1fr_2px_1fr] items-stretch gap-0 text-center sm:mt-8">
+          <div className="mt-5 grid grid-cols-[1fr_auto_1fr] items-stretch gap-0 text-center sm:mt-8">
             <div className="p-3 sm:p-6">
               <p className="text-[10px] font-black uppercase tracking-[0.16em] opacity-60 sm:text-xs sm:tracking-widest">
                 Fair
@@ -198,7 +198,9 @@ export function ExamPage() {
                 {exam.data.touchingCount}
               </p>
             </div>
-            <div className="bg-white/50" aria-hidden />
+            <div className="flex items-center px-2 text-xs font-bold opacity-60 sm:px-4 sm:text-sm">
+              VS.
+            </div>
             <div className="p-3 sm:p-6">
               <p className="text-[10px] font-black uppercase tracking-[0.16em] opacity-60 sm:text-xs sm:tracking-widest">
                 Fucked

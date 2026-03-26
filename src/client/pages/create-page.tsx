@@ -17,18 +17,25 @@ type FormState = {
   examName: string;
 };
 
+const getDefaultSemester = () => {
+  const month = new Date().getMonth();
+  if (month >= 0 && month <= 3) return "winter";
+  if (month >= 4 && month <= 7) return "spring";
+  return "fall";
+};
+
 const initialState: FormState = {
   faculty: "",
   courseNumber: "",
-  termSeason: "fall",
+  termSeason: getDefaultSemester(),
   termYear: new Date().getFullYear().toString(),
   examName: "",
 };
 
 const termSeasons = [
-  { value: "fall", label: "Fall" },
-  { value: "spring", label: "Spring" },
   { value: "winter", label: "Winter" },
+  { value: "spring", label: "Spring" },
+  { value: "fall", label: "Fall" },
 ] as const;
 
 export function CreatePage() {
