@@ -1,0 +1,4 @@
+# esbuild and workerd need their postinstall scripts to fetch platform binaries.
+allowBuilds:
+  esbuild: true
+  workerd: true

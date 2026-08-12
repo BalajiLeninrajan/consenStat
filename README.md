@@ -10,7 +10,7 @@ Users can search exams, create new ones with duplicate detection, and vote on wh
 - Backend: Cloudflare Workers with Hono
 - Data: Cloudflare D1
 - Real-time: Cloudflare Durable Objects + WebSockets
-- Tooling: bun, Wrangler
+- Tooling: pnpm, Wrangler
 
 ## Features
 
@@ -33,39 +33,59 @@ wrangler.toml      Worker, D1, Durable Object, and asset bindings
 
 ## Scripts
 
-- `bun run dev` - start the Vite frontend on port `5173`
-- `bun run build` - build the frontend into `dist/`
-- `bun run check` - run TypeScript type-checking
-- `bun run worker:types` - regenerate Wrangler environment types
-- `bun run deploy` - deploy the Worker and static assets with Wrangler
+- `pnpm dev` - start the Vite frontend on port `5173`
+- `pnpm build` - build the frontend into `dist/`
+- `pnpm check` - run TypeScript type-checking
+- `pnpm worker:types` - regenerate Wrangler environment types
+- `pnpm deploy` - deploy the Worker and static assets with Wrangler
 
 ## Local Development
 
 1. Install dependencies:
 
 ```bash
-bun install
+pnpm install
 ```
 
 1. Type-check the project:
 
 ```bash
-bun run check
+pnpm check
 ```
 
 1. Build the frontend bundle:
 
 ```bash
-bun run build
+pnpm build
 ```
+
+### Running the full stack locally
+
+`pnpm dev` starts the Vite frontend only. There is no Vite proxy, so `/api/*`
+and the WebSocket tally feed return 404 there. To exercise the real backend,
+run the Worker with Wrangler, which serves the API, D1, the Durable Object, and
+the built assets from `dist/` on one origin:
+
+```bash
+echo "COOKIE_SECRET=$(openssl rand -hex 32)" > .dev.vars
+pnpm exec wrangler d1 migrations apply consenstat --local
+pnpm build
+pnpm exec wrangler dev
+```
+
+The app is then at `http://localhost:8787`. Wrangler serves the prebuilt
+`dist/`, so re-run `pnpm build` after frontend changes; it does not pick up
+new `.dev.vars` values without a restart.
 
 ### Important local setup notes
 
 - The app expects a Cloudflare D1 database bound as `DB`.
-- The Worker expects a `COOKIE_SECRET` secret binding.
+- The Worker expects a `COOKIE_SECRET` secret binding. It is unset by default
+  locally, and voting fails with a zero-length HMAC key error until you create
+  `.dev.vars` as shown above. `.dev.vars` is gitignored.
 - The Durable Object binding is `EXAM_ROOMS`.
-- The SQL schema lives in [migrations/0001_initial.sql](/home/balaji/Documents/code/consenStat/migrations/0001_initial.sql).
-- `bun run dev` only starts the Vite frontend. This repo does not currently include a Vite proxy or a combined local full-stack script, so `/api/*` and WebSocket features are not fully wired for standalone local frontend dev.
+- The SQL schema lives in [migrations/0001_initial.sql](migrations/0001_initial.sql).
+- Local D1 state lives in `.wrangler/state/v3/d1`; delete it to reset.
 
 ## Runtime Architecture
 
@@ -79,7 +99,7 @@ bun run build
 
 ## Data Model
 
-Defined in [migrations/0001_initial.sql](/home/balaji/Documents/code/consenStat/migrations/0001_initial.sql):
+Defined in [migrations/0001_initial.sql](migrations/0001_initial.sql):
 
 - `courses`
 - `terms`
@@ -89,9 +109,9 @@ Defined in [migrations/0001_initial.sql](/home/balaji/Documents/code/consenStat/
 
 ## Deployment Notes
 
-- Worker entrypoint: [src/worker/index.ts](/home/balaji/Documents/code/consenStat/src/worker/index.ts)
+- Worker entrypoint: [src/worker/index.ts](src/worker/index.ts)
 - Static asset directory: `dist`
-- Wrangler config: [wrangler.toml](/home/balaji/Documents/code/consenStat/wrangler.toml)
+- Wrangler config: [wrangler.toml](wrangler.toml)
 - Before deploy, make sure the D1 database exists, the schema has been applied, and `COOKIE_SECRET` has been set in Wrangler.
 
 ## Current Scope
