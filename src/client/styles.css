@@ -841,15 +841,6 @@
     min-height: 60px;
     padding: 9px 13px;
   }
-  /* Icon-only collapse: kill the label, keep the glyph and its accessible name. */
-  .chip.is-iconic {
-    padding: 7px;
-    font-size: 0;
-  }
-  .chip.is-iconic svg {
-    width: 16px;
-    height: 16px;
-  }
   .display-title {
     font-size: 38px;
   }
