@@ -1,12 +1,27 @@
 import { useQuery } from "@tanstack/react-query";
 import { Search, AlertCircle } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import { getRecentExams, searchExams } from "../lib/api";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 import { Input } from "../ui/input";
 import { Progress } from "../ui/progress";
+
+const ENTITY_COLORS = [
+  "#cba6f7",
+  "#94e2d5",
+  "#f9e2af",
+  "#89b4fa",
+  "#fab387",
+  "#f5c2e7",
+];
+
+const FINE_PRINT = [
+  "One browser, one vote. Don't be a slut for statistics.",
+  "Votes are anonymous. Your TA won't find you here.",
+  "Don't create duplicates, we have enough problems already.",
+];
 
 function voteShare(touching: number, total: number) {
   return total === 0 ? 50 : Math.round((touching / total) * 100);
@@ -34,172 +49,151 @@ export function HomePage() {
   const listItems = featured ? items.slice(1) : items;
   const visibleItems = listItems.slice(0, visibleCount);
   const hasMore = visibleCount < listItems.length;
+  const isLoading = recent.isLoading || search.isLoading;
 
   return (
-    <div className="space-y-5 sm:space-y-8">
-      <div className="relative">
-        <Search className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-black sm:left-6 sm:h-6 sm:w-6" />
+    <div className="flex flex-col gap-6 sm:gap-8">
+      <div className="search">
+        <Search aria-hidden="true" />
         <Input
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           placeholder="SEARCH FOR YOUR EXAM"
-          className="h-14 border-4 border-black bg-white pl-12 pr-4 text-base font-black uppercase shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-all focus:translate-x-1 focus:translate-y-1 focus:shadow-none sm:h-20 sm:pl-16 sm:pr-8 sm:text-2xl"
+          aria-label="Search for your exam"
+          className="input-lg"
         />
       </div>
 
-      <div className="grid gap-8 lg:grid-cols-[1.5fr_0.6fr]">
-        <div className="order-first space-y-5 sm:space-y-8">
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1.55fr)_minmax(0,0.75fr)] lg:gap-8">
+        <div className="flex min-w-0 flex-col gap-6">
           {featured && (
-            <Link to={`/exam/${featured.id}`} className="block">
-              <Card className="theme-card card-shadow border-4 border-black bg-[var(--accent-color)] p-5 text-black transition hover:translate-x-1 hover:translate-y-1 hover:shadow-none sm:p-10">
-                <div className="flex flex-col gap-4 sm:gap-6">
-                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                    <span className="w-fit border-4 border-black bg-black px-3 py-1 text-[11px] font-black uppercase tracking-[0.18em] text-[var(--accent-text-color)] sm:px-4 sm:text-sm sm:tracking-widest">
-                      LATEST TRAUMA
-                    </span>
-                    <span className="w-fit border-2 border-black/20 px-3 py-1 text-[11px] font-black uppercase tracking-[0.16em] sm:text-sm sm:tracking-widest">
-                      {featured.voteCount} TOTAL VICTIMS
-                    </span>
-                  </div>
-                  <div>
-                    <h2 className="font-theme-display text-5xl font-black uppercase leading-[0.9] tracking-tighter sm:text-7xl">
-                      <span className="block text-[var(--accent-text-color)] opacity-90">
-                        {featured.courseCode}
-                      </span>
-                      <span className="mt-2 block">{featured.examName}</span>
-                    </h2>
-                    <p className="mt-4 text-sm font-black uppercase tracking-[0.16em] opacity-60 sm:text-xl sm:tracking-widest">
-                      {featured.termLabel}
-                    </p>
-                  </div>
-                  <div className="mt-2 sm:mt-4">
-                    <div className="mb-3 flex flex-col gap-1 text-sm font-black uppercase tracking-[0.14em] sm:mb-4 sm:flex-row sm:justify-between sm:text-xl sm:tracking-widest">
-                      <span>Consensus</span>
-                      <span>
-                        {voteShare(featured.touchingCount, featured.voteCount)}%
-                        consensual
-                      </span>
-                    </div>
-                    <Progress
-                      value={voteShare(
-                        featured.touchingCount,
-                        featured.voteCount,
-                      )}
-                      className="h-7 sm:h-10"
-                    />
-                  </div>
+            <Link
+              to={`/exam/${featured.id}`}
+              className="block"
+              style={{ "--entity-color": ENTITY_COLORS[0] } as CSSProperties}
+            >
+              <article className="entity-card gap-5 p-6 sm:p-8 sm:pl-10">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <span className="eyebrow mb-0">Latest trauma</span>
+                  <span className="chip">
+                    {featured.voteCount} TOTAL VICTIMS
+                  </span>
                 </div>
-              </Card>
+                <div>
+                  <span className="entity-code">{featured.courseCode}</span>
+                  <h2 className="entity-title-lg mt-2">{featured.examName}</h2>
+                  <p className="entity-meta mt-3">{featured.termLabel}</p>
+                </div>
+                <div className="flex flex-col gap-3">
+                  <div className="stat-row">
+                    <span>Consensus</span>
+                    <b>
+                      {voteShare(featured.touchingCount, featured.voteCount)}%
+                      CONSENSUAL
+                    </b>
+                  </div>
+                  <Progress
+                    className="is-tall"
+                    value={voteShare(featured.touchingCount, featured.voteCount)}
+                  />
+                </div>
+              </article>
             </Link>
           )}
 
-          <div className="grid gap-6 md:grid-cols-2">
-            {(recent.isLoading || search.isLoading) && (
-              <p className="col-span-full animate-pulse text-lg font-black uppercase sm:text-2xl">
+          <div className="grid gap-4 md:grid-cols-2">
+            {isLoading && (
+              <p className="meta-line col-span-full animate-pulse">
                 SCANNING FOR VICTIMS...
               </p>
             )}
-            {items.length === 0 && !recent.isLoading && !search.isLoading && (
-              <Card className="theme-card card-shadow col-span-full border-4 border-black bg-white p-6 sm:p-8">
-                <p className="text-xl font-black uppercase sm:text-2xl">
-                  No suffering detected. Be the first to complain.
-                </p>
-                <Link to="/create" className="mt-6 inline-block">
-                  <Button className="border-4 border-black bg-[var(--accent-color)] px-6 py-3 text-base text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:px-8 sm:py-4 sm:text-xl">
-                    SUBMIT DISASTER
-                  </Button>
-                </Link>
+
+            {items.length === 0 && !isLoading && (
+              <Card className="col-span-full">
+                <div className="empty-state">
+                  <strong>No suffering detected.</strong>
+                  <span className="copy">Be the first to complain.</span>
+                  <Link to="/create" className="mt-2">
+                    <Button>Submit disaster</Button>
+                  </Link>
+                </div>
               </Card>
             )}
-            {visibleItems.map((exam) => {
+
+            {visibleItems.map((exam, index) => {
               const share = voteShare(exam.touchingCount, exam.voteCount);
               return (
-                <Link key={exam.id} to={`/exam/${exam.id}`} className="block">
-                  <article className="theme-card card-shadow flex h-full flex-col justify-between border-4 border-black bg-white p-5 transition hover:translate-x-1 hover:translate-y-1 hover:shadow-none sm:p-6">
+                <Link
+                  key={exam.id}
+                  to={`/exam/${exam.id}`}
+                  className="block"
+                  style={
+                    {
+                      "--entity-color":
+                        ENTITY_COLORS[(index + 1) % ENTITY_COLORS.length],
+                    } as CSSProperties
+                  }
+                >
+                  <article className="entity-card h-full justify-between gap-5">
                     <div>
-                      <h3 className="font-black uppercase leading-tight tracking-tight text-xl sm:text-2xl">
-                        <span className="text-[var(--accent-text-color)]">
-                          {exam.courseCode}
-                        </span>
-                        <span className="mx-2 opacity-40">•</span>
-                        <span>{exam.examName}</span>
-                      </h3>
-                      <p className="mb-6 mt-1 text-[11px] font-black uppercase tracking-[0.16em] opacity-60 sm:text-xs sm:tracking-widest">
-                        {exam.termLabel}
-                      </p>
+                      <span className="entity-code">{exam.courseCode}</span>
+                      <h3 className="entity-title mt-2">{exam.examName}</h3>
+                      <p className="entity-meta mt-2">{exam.termLabel}</p>
                     </div>
-                    <div className="mt-auto">
-                      <div className="mb-2 flex justify-between text-[9px] font-black uppercase sm:text-[10px]">
-                        <span>CONSENSUS</span>
-                        <span>{share}% CONSENSUAL</span>
+                    <div className="flex flex-col gap-2">
+                      <div className="stat-row">
+                        <span>Consensus</span>
+                        <b>{share}%</b>
                       </div>
-                      <Progress value={share} className="h-4 border-2" />
+                      <Progress value={share} />
+                      <p className="entity-meta">{exam.voteCount} VICTIMS</p>
                     </div>
                   </article>
                 </Link>
               );
             })}
+
             {hasMore && (
               <div className="col-span-full">
                 <Button
                   variant="secondary"
-                  className="w-full border-4 border-black bg-white px-6 py-3 text-sm text-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:w-auto sm:text-base"
+                  className="w-full sm:w-auto"
                   onClick={() => setVisibleCount((current) => current + 5)}
                 >
-                  Show More
+                  Show more
                 </Button>
               </div>
             )}
           </div>
         </div>
 
-        <aside className="order-last space-y-5 lg:order-none lg:space-y-8">
-          <Card className="theme-card card-shadow border-4 border-black bg-black p-6 text-[var(--accent-text-color)] sm:p-8">
-            <h2 className="mb-5 font-theme-display text-xl font-black uppercase tracking-tighter sm:mb-6 sm:text-2xl">
-              Fine print
-            </h2>
-            <ul className="space-y-3 text-xs font-bold uppercase leading-tight text-black sm:space-y-4 sm:text-sm">
-              <li className="flex gap-3">
-                <span className="bg-[var(--accent-color)] text-black px-1 shrink-0">
-                  01
-                </span>
-                <span>
-                  One browser, one vote. Don't be a slut for statistics.
-                </span>
-              </li>
-              <li className="flex gap-3">
-                <span className="bg-[var(--accent-color)] text-black px-1 shrink-0">
-                  02
-                </span>
-                <span>Votes are anonymous. Your TA won't find you here.</span>
-              </li>
-              <li className="flex gap-3">
-                <span className="bg-[var(--accent-color)] text-black px-1 shrink-0">
-                  03
-                </span>
-                <span>
-                  Don't create duplicates, we have enough problems already
-                </span>
-              </li>
+        <aside className="flex min-w-0 flex-col gap-6 lg:gap-8">
+          <Card className="tilted">
+            <h2 className="section-title">Fine print</h2>
+            <ul className="mt-5 flex flex-col gap-4">
+              {FINE_PRINT.map((rule, index) => (
+                <li key={rule} className="flex items-start gap-3">
+                  <span className="mark-solid">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <span className="copy">{rule}</span>
+                </li>
+              ))}
             </ul>
           </Card>
 
-          <Card className="theme-card card-shadow border-4 border-black bg-white p-6 sm:p-8">
-            <div className="mb-4 flex items-center gap-3 text-[var(--accent-text-color)]">
-              <AlertCircle className="h-5 w-5 sm:h-6 sm:w-6" />
-              <h2 className="font-theme-display text-xl font-black uppercase tracking-tighter sm:text-2xl">
-                WHAT IS THIS?
-              </h2>
+          <Card>
+            <div className="flex items-center gap-3">
+              <AlertCircle className="h-5 w-5 text-[var(--mauve)]" />
+              <h2 className="section-title">What is this?</h2>
             </div>
-            <p className="text-xs font-bold uppercase leading-tight sm:text-sm">
-              A crowd-sourced pulse of Waterloo's academic brutality. Find out
-              if you're the only one who got railed, or if it was a collective
-              execution.
+            <p className="copy mt-4">
+              A crowd-sourced pulse of Waterloo&apos;s academic brutality. Find
+              out if you&apos;re the only one who got railed, or if it was a
+              collective execution.
             </p>
-            <Link to="/create" className="mt-6 block sm:mt-8">
-              <Button className="w-full border-4 border-black bg-white py-3 text-sm text-black transition-colors hover:bg-[var(--accent-color)] hover:text-black sm:py-4 sm:text-base">
-                LIST NEW EXAM
-              </Button>
+            <Link to="/create" className="mt-6 block">
+              <Button className="w-full">List new exam</Button>
             </Link>
           </Card>
         </aside>

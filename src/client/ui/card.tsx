@@ -4,9 +4,10 @@ import { cn } from "../lib/cn";
 export function Card({
   children,
   className,
-}: PropsWithChildren<{ className?: string }>) {
+  id,
+}: PropsWithChildren<{ className?: string; id?: string }>) {
   return (
-    <section className={cn("theme-card p-8 shadow-card", className)}>
+    <section id={id} className={cn("panel p-5 sm:p-7", className)}>
       {children}
     </section>
   );

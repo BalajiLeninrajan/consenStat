@@ -5,24 +5,16 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: "primary" | "secondary" | "ghost";
 };
 
+const variants = {
+  primary: "btn-primary",
+  secondary: "btn-secondary",
+  ghost: "btn-ghost",
+} as const;
+
 export function Button({
   className,
   variant = "primary",
   ...props
 }: ButtonProps) {
-  return (
-    <button
-      className={cn(
-        "inline-flex items-center justify-center font-black uppercase transition disabled:cursor-not-allowed disabled:opacity-50",
-        variant === "primary" &&
-          "bg-black text-[var(--accent-text-color)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none shadow-[4px_4px_0px_0px_rgba(253,213,79,1)]",
-        variant === "secondary" &&
-          "bg-[var(--accent-color)] text-black border-2 border-black hover:translate-x-1 hover:translate-y-1 hover:shadow-none shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]",
-        variant === "ghost" &&
-          "bg-transparent text-black hover:bg-black/5 border-2 border-transparent",
-        className,
-      )}
-      {...props}
-    />
-  );
+  return <button className={cn(variants[variant], className)} {...props} />;
 }
