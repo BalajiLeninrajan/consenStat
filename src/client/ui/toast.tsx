@@ -34,12 +34,13 @@ export function ToastProvider({ children }: PropsWithChildren) {
   return (
     <ToastContext.Provider value={value}>
       {children}
-      <div className="fixed bottom-4 left-3 right-3 z-[100] flex max-w-sm flex-col gap-3 sm:bottom-8 sm:left-auto sm:right-8 sm:w-full sm:gap-4">
+      <div
+        aria-live="polite"
+        className="pointer-events-none fixed bottom-4 left-3 right-3 z-[100] flex flex-col gap-3 sm:bottom-8 sm:left-auto sm:right-8 sm:w-full sm:max-w-sm"
+      >
         {toasts.map((toast) => (
-          <div
-            key={toast.id}
-            className="animate-in slide-in-from-right border-4 border-black bg-[var(--accent-color)] px-4 py-3 text-sm font-black uppercase text-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] sm:px-8 sm:py-4 sm:text-lg sm:shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]"
-          >
+          <div key={toast.id} className="toast page-enter">
+            <span className="live-dot" />
             {toast.message}
           </div>
         ))}

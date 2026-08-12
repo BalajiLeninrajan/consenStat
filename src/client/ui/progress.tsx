@@ -7,17 +7,16 @@ export function Progress({
   value: number;
   className?: string;
 }) {
+  const clamped = Math.max(0, Math.min(100, value));
   return (
     <div
-      className={cn(
-        "h-6 overflow-hidden border-4 border-black bg-white",
-        className,
-      )}
+      className={cn("progress-track", className)}
+      role="progressbar"
+      aria-valuenow={clamped}
+      aria-valuemin={0}
+      aria-valuemax={100}
     >
-      <div
-        className="h-full bg-[var(--accent-color)] transition-all duration-500"
-        style={{ width: `${Math.max(0, Math.min(100, value))}%` }}
-      />
+      <span style={{ width: `${clamped}%` }} />
     </div>
   );
 }
