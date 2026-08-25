@@ -58,7 +58,7 @@ export function HomePage() {
         <Input
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          placeholder="SEARCH FOR YOUR EXAM"
+          placeholder="Search for your exam"
           aria-label="Search for your exam"
           className="input-lg"
         />
@@ -76,7 +76,7 @@ export function HomePage() {
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <span className="eyebrow mb-0">Latest trauma</span>
                   <span className="chip">
-                    {featured.voteCount} TOTAL VICTIMS
+                    {featured.voteCount} total victims
                   </span>
                 </div>
                 <div>
@@ -88,8 +88,7 @@ export function HomePage() {
                   <div className="stat-row">
                     <span>Consensus</span>
                     <b>
-                      {voteShare(featured.touchingCount, featured.voteCount)}%
-                      CONSENSUAL
+                      {voteShare(featured.touchingCount, featured.voteCount)}% consensual
                     </b>
                   </div>
                   <Progress
@@ -103,21 +102,19 @@ export function HomePage() {
 
           <div className="grid gap-4 md:grid-cols-2">
             {isLoading && (
-              <p className="cn-meta col-span-full animate-pulse">
-                SCANNING FOR VICTIMS...
-              </p>
+              <div className="empty-state col-span-full animate-pulse">
+                <strong>Scanning for victims…</strong>
+              </div>
             )}
 
             {items.length === 0 && !isLoading && (
-              <Card className="col-span-full">
-                <div className="empty-state">
-                  <strong>No suffering detected.</strong>
-                  <span>Be the first to complain.</span>
-                  <Link to="/create" className="btn btn-primary mt-2">
-                    Submit disaster
-                  </Link>
-                </div>
-              </Card>
+              <div className="empty-state col-span-full">
+                <strong>No suffering detected.</strong>
+                <span>Be the first to complain.</span>
+                <Link to="/create" className="btn btn-primary mt-2">
+                  Submit disaster
+                </Link>
+              </div>
             )}
 
             {visibleItems.map((exam, index) => {

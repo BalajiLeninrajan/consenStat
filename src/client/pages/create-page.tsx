@@ -58,7 +58,7 @@ export function CreatePage() {
   const createMutation = useMutation({
     mutationFn: createExam,
     onSuccess(data) {
-      toast.push("DISASTER LOGGED SUCCESSFULLY");
+      toast.push("Disaster logged successfully");
       navigate(`/exam/${data.id}`);
     },
   });
@@ -193,7 +193,7 @@ export function CreatePage() {
 
           <div className="flex flex-col gap-4 border-t border-surface-0 pt-6 md:flex-row md:items-center md:justify-between">
             <p className="cn-meta max-w-md">
-              WE&apos;LL CHECK IF THIS VIOLATION HAS ALREADY BEEN REPORTED.
+              We&apos;ll check if this violation has already been reported.
             </p>
             <Button
               type="submit"
@@ -248,8 +248,7 @@ export function CreatePage() {
                   <h3 className="cn-title">{candidate.examName}</h3>
                   <p className="cn-meta">{candidate.termLabel}</p>
                   <p className="cn-label cn-text-accent mt-1">
-                    {candidate.matchType} · {Math.round(candidate.score * 100)}%
-                    MATCH
+                    {candidate.matchType} · {Math.round(candidate.score * 100)}% match
                   </p>
                 </article>
               </Link>

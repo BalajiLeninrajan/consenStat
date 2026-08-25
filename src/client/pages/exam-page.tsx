@@ -155,15 +155,17 @@ export function ExamPage() {
           : current,
       );
       queryClient.invalidateQueries({ queryKey: ["recent-exams"] });
-      toast.push(`RECORDED: ${data.yourVote}`);
+      toast.push(
+        `Recorded: ${VOTE_OPTIONS.find((option) => option.value === data.yourVote)?.label ?? data.yourVote}`,
+      );
     },
   });
 
   if (exam.isLoading) {
     return (
-      <Card>
-        <p className="cn-meta animate-pulse">LOADING THE TRAUMA REPORT...</p>
-      </Card>
+      <div className="empty-state animate-pulse">
+        <strong>Loading the trauma report…</strong>
+      </div>
     );
   }
 
@@ -196,7 +198,7 @@ export function ExamPage() {
           <div className="well mt-8 p-5 sm:p-7">
             <div className="stat-row">
               <span>Consensus</span>
-              <b>{share}% CONSENSUAL</b>
+              <b>{share}% consensual</b>
             </div>
             <Progress className="is-tall mt-3" value={share} />
 
@@ -292,14 +294,14 @@ export function ExamPage() {
 
           <div className="mt-7 flex flex-col gap-2 border-t border-surface-0 pt-5">
             <p className="cn-meta">
-              VICTIMS COUNTED: <b>{exam.data.voteCount}</b>
+              Victims counted: <b>{exam.data.voteCount}</b>
             </p>
             <p className="cn-meta">
-              LAST CRY FOR HELP:{" "}
+              Last cry for help:{" "}
               <b>
                 {exam.data.lastVotedAt
                   ? new Date(exam.data.lastVotedAt).toLocaleString()
-                  : "PURE SILENCE"}
+                  : "pure silence"}
               </b>
             </p>
             {vote.error && (
