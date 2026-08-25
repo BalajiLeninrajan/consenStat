@@ -4,7 +4,7 @@
    utility overrides keep winning. */
 @layer tw-base, cn.tokens, cn.utilities, cn.recipes;
 
-@import "catppuccin-neu/css/index.css";
+@import "./vendor/index.css";
 
 @layer tw-base {
   @tailwind base;
