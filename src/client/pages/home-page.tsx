@@ -112,7 +112,7 @@ export function HomePage() {
               <Card className="col-span-full">
                 <div className="empty-state">
                   <strong>No suffering detected.</strong>
-                  <span className="cn-copy">Be the first to complain.</span>
+                  <span>Be the first to complain.</span>
                   <Link to="/create" className="mt-2">
                     <Button>Submit disaster</Button>
                   </Link>

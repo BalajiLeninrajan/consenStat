@@ -257,30 +257,32 @@ export function ExamPage() {
             </span>
           </div>
 
-          <fieldset className="segmented is-stacked mt-6 border-0 p-0">
+          <fieldset className="mt-6 border-0 p-0">
             <legend className="sr-only">Vote on this exam</legend>
-            {VOTE_OPTIONS.map((option) => {
-              const active = selectedVote === option.value;
-              return (
-                <label
-                  key={option.value}
-                  className={`justify-between ${active ? "active" : ""} ${
-                    vote.isPending ? "pointer-events-none opacity-60" : ""
-                  }`}
-                >
-                  <input
-                    type="radio"
-                    name="voteType"
-                    value={option.value}
-                    checked={active}
-                    onChange={() => vote.mutate(option.value)}
-                    className="sr-only"
-                  />
-                  <b>{option.label}</b>
-                  <small>{option.hint}</small>
-                </label>
-              );
-            })}
+            <div className="segmented is-stacked">
+              {VOTE_OPTIONS.map((option) => {
+                const active = selectedVote === option.value;
+                return (
+                  <label
+                    key={option.value}
+                    className={`justify-between ${active ? "active" : ""} ${
+                      vote.isPending ? "pointer-events-none opacity-60" : ""
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="voteType"
+                      value={option.value}
+                      checked={active}
+                      onChange={() => vote.mutate(option.value)}
+                      className="sr-only"
+                    />
+                    <b>{option.label}</b>
+                    <small>{option.hint}</small>
+                  </label>
+                );
+              })}
+            </div>
           </fieldset>
 
           <div className="mt-7 flex flex-col gap-2 border-t border-surface-0 pt-5">

@@ -21,7 +21,7 @@ export function Dialog({
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className="modal"
+        className="modal scroll-well"
       >
         <header>
           <h2 className="cn-title">{title}</h2>
@@ -34,7 +34,7 @@ export function Dialog({
             <X className="h-4 w-4" />
           </button>
         </header>
-        <div className="scroll-well p-5">{children}</div>
+        <div className="p-5">{children}</div>
       </div>
     </div>
   );
