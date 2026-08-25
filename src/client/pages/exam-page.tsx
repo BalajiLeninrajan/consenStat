@@ -200,6 +200,9 @@ export function ExamPage() {
             </div>
             <Progress className="is-tall mt-3" value={share} />
 
+            {/* --accent deliberately re-keyed to green/red (Mocha tokens
+                outside the 6-color accent cycle) for the semantic
+                fair/unfair pairing — .metric.is-hero reads --accent. */}
             <div className="mt-6 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center">
               <div
                 className="metric is-hero"
@@ -243,13 +246,15 @@ export function ExamPage() {
                 How was the test? Be honest, no one is watching.
               </p>
             </div>
+            {/* Offline keeps a neutral overlay-0 tone (deliberately outside
+                the semantic cn-tone-* set) so the muted state doesn't read
+                as an error. */}
             <span
-              className="chip-tone shrink-0"
+              className={`chip-tone shrink-0${liveStatus === "live" ? " cn-tone-green" : ""}`}
               style={
-                {
-                  "--tone":
-                    liveStatus === "live" ? "var(--green)" : "var(--overlay-0)",
-                } as CSSProperties
+                liveStatus === "live"
+                  ? undefined
+                  : ({ "--tone": "var(--overlay-0)" } as CSSProperties)
               }
             >
               {liveStatus === "live" && <span className="live-dot" />}

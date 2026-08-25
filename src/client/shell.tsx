@@ -1,5 +1,4 @@
 import { Outlet, Link, useLocation } from "react-router-dom";
-import { Button } from "./ui/button";
 
 export function AppShell() {
   const location = useLocation();
@@ -12,8 +11,8 @@ export function AppShell() {
         </Link>
         <div className="flex shrink-0 items-center gap-3">
           {location.pathname !== "/create" && (
-            <Link to="/create">
-              <Button>List new exam</Button>
+            <Link to="/create" className="btn btn-primary">
+              List new exam
             </Link>
           )}
         </div>

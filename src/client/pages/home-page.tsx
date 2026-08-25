@@ -113,8 +113,8 @@ export function HomePage() {
                 <div className="empty-state">
                   <strong>No suffering detected.</strong>
                   <span>Be the first to complain.</span>
-                  <Link to="/create" className="mt-2">
-                    <Button>Submit disaster</Button>
+                  <Link to="/create" className="btn btn-primary mt-2">
+                    Submit disaster
                   </Link>
                 </div>
               </Card>
@@ -192,8 +192,8 @@ export function HomePage() {
               out if you&apos;re the only one who got railed, or if it was a
               collective execution.
             </p>
-            <Link to="/create" className="mt-6 block">
-              <Button className="w-full">List new exam</Button>
+            <Link to="/create" className="btn btn-primary mt-6 w-full">
+              List new exam
             </Link>
           </Card>
         </aside>
