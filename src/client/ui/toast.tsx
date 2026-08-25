@@ -34,14 +34,12 @@ export function ToastProvider({ children }: PropsWithChildren) {
   return (
     <ToastContext.Provider value={value}>
       {children}
-      <div
-        aria-live="polite"
-        className="pointer-events-none fixed bottom-4 left-3 right-3 z-[100] flex flex-col gap-3 sm:bottom-8 sm:left-auto sm:right-8 sm:w-full sm:max-w-sm"
-      >
+      <div aria-live="polite" className="toast-stack">
         {toasts.map((toast) => (
-          <div key={toast.id} className="toast page-enter">
-            <span className="live-dot" />
-            {toast.message}
+          <div key={toast.id} className="toast">
+            <div>
+              <b>{toast.message}</b>
+            </div>
           </div>
         ))}
       </div>

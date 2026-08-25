@@ -39,7 +39,7 @@ function voteStorageKey(examId: string) {
 
 function BackLink() {
   return (
-    <Link to="/" className="back-link">
+    <Link to="/" className="btn btn-secondary back-link">
       <ArrowLeft className="h-4 w-4" aria-hidden="true" />
       Back to list
     </Link>
@@ -155,15 +155,17 @@ export function ExamPage() {
           : current,
       );
       queryClient.invalidateQueries({ queryKey: ["recent-exams"] });
-      toast.push(`RECORDED: ${data.yourVote}`);
+      toast.push(
+        `Recorded: ${VOTE_OPTIONS.find((option) => option.value === data.yourVote)?.label ?? data.yourVote}`,
+      );
     },
   });
 
   if (exam.isLoading) {
     return (
-      <Card>
-        <p className="meta-line animate-pulse">LOADING THE TRAUMA REPORT...</p>
-      </Card>
+      <div className="empty-state animate-pulse">
+        <strong>Loading the trauma report…</strong>
+      </div>
     );
   }
 
@@ -196,24 +198,27 @@ export function ExamPage() {
           <div className="well mt-8 p-5 sm:p-7">
             <div className="stat-row">
               <span>Consensus</span>
-              <b>{share}% CONSENSUAL</b>
+              <b>{share}% consensual</b>
             </div>
             <Progress className="is-tall mt-3" value={share} />
 
+            {/* --accent deliberately re-keyed to green/red (Mocha tokens
+                outside the 6-color accent cycle) for the semantic
+                fair/unfair pairing — .metric.is-hero reads --accent. */}
             <div className="mt-6 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center">
               <div
                 className="metric is-hero"
-                style={{ "--tone": "var(--green)" } as CSSProperties}
+                style={{ "--accent": "var(--green)" } as CSSProperties}
               >
                 <span>Fair</span>
                 <strong>{exam.data.touchingCount}</strong>
               </div>
-              <span className="font-mono text-[9px] font-bold tracking-[0.08em] text-[var(--overlay-0)]">
+              <span className="cn-microlabel cn-text-overlay-0">
                 VS
               </span>
               <div
                 className="metric is-hero items-end text-right"
-                style={{ "--tone": "var(--red)" } as CSSProperties}
+                style={{ "--accent": "var(--red)" } as CSSProperties}
               >
                 <span>Fucked</span>
                 <strong>{exam.data.touchyCount}</strong>
@@ -228,7 +233,7 @@ export function ExamPage() {
                 .getElementById("vote-section")
                 ?.scrollIntoView({ behavior: "smooth" });
             }}
-            className="btn-text mt-6 w-full justify-center sm:hidden"
+            className="btn-text mt-6 flex w-full items-center justify-center gap-2 sm:hidden"
           >
             Scroll to vote
             <ChevronDown className="h-4 w-4" />
@@ -238,18 +243,20 @@ export function ExamPage() {
         <Card id="vote-section">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
-              <h2 className="section-title">Confess</h2>
-              <p className="copy mt-2">
+              <h2 className="cn-title">Confess</h2>
+              <p className="cn-copy mt-2">
                 How was the test? Be honest, no one is watching.
               </p>
             </div>
+            {/* Offline keeps a neutral overlay-0 tone (deliberately outside
+                the semantic cn-tone-* set) so the muted state doesn't read
+                as an error. */}
             <span
-              className="chip-tone shrink-0"
+              className={`chip-tone shrink-0${liveStatus === "live" ? " cn-tone-green" : ""}`}
               style={
-                {
-                  "--tone":
-                    liveStatus === "live" ? "var(--green)" : "var(--overlay-0)",
-                } as CSSProperties
+                liveStatus === "live"
+                  ? undefined
+                  : ({ "--tone": "var(--overlay-0)" } as CSSProperties)
               }
             >
               {liveStatus === "live" && <span className="live-dot" />}
@@ -257,42 +264,44 @@ export function ExamPage() {
             </span>
           </div>
 
-          <fieldset className="segmented is-stacked mt-6 border-0 p-0">
+          <fieldset className="mt-6 border-0 p-0">
             <legend className="sr-only">Vote on this exam</legend>
-            {VOTE_OPTIONS.map((option) => {
-              const active = selectedVote === option.value;
-              return (
-                <label
-                  key={option.value}
-                  className={`justify-between ${active ? "is-active" : ""} ${
-                    vote.isPending ? "pointer-events-none opacity-60" : ""
-                  }`}
-                >
-                  <input
-                    type="radio"
-                    name="voteType"
-                    value={option.value}
-                    checked={active}
-                    onChange={() => vote.mutate(option.value)}
-                    className="sr-only"
-                  />
-                  <b>{option.label}</b>
-                  <small>{option.hint}</small>
-                </label>
-              );
-            })}
+            <div className="segmented is-stacked">
+              {VOTE_OPTIONS.map((option) => {
+                const active = selectedVote === option.value;
+                return (
+                  <label
+                    key={option.value}
+                    className={`justify-between ${active ? "active" : ""} ${
+                      vote.isPending ? "pointer-events-none opacity-60" : ""
+                    }`}
+                  >
+                    <input
+                      type="radio"
+                      name="voteType"
+                      value={option.value}
+                      checked={active}
+                      onChange={() => vote.mutate(option.value)}
+                      className="sr-only"
+                    />
+                    <b>{option.label}</b>
+                    <small>{option.hint}</small>
+                  </label>
+                );
+              })}
+            </div>
           </fieldset>
 
-          <div className="mt-7 flex flex-col gap-2 border-t border-[var(--surface-0)] pt-5">
-            <p className="meta-line">
-              VICTIMS COUNTED: <b>{exam.data.voteCount}</b>
+          <div className="mt-7 flex flex-col gap-2 border-t border-surface-0 pt-5">
+            <p className="cn-meta">
+              Victims counted: <b>{exam.data.voteCount}</b>
             </p>
-            <p className="meta-line">
-              LAST CRY FOR HELP:{" "}
+            <p className="cn-meta">
+              Last cry for help:{" "}
               <b>
                 {exam.data.lastVotedAt
                   ? new Date(exam.data.lastVotedAt).toLocaleString()
-                  : "PURE SILENCE"}
+                  : "pure silence"}
               </b>
             </p>
             {vote.error && (
