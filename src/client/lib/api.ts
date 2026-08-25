@@ -9,7 +9,9 @@ async function request<T>(input: RequestInfo, init?: RequestInit): Promise<T> {
   });
 
   if (!response.ok) {
-    const data = await response.json().catch(() => ({}));
+    const data = (await response.json().catch(() => ({}))) as {
+      error?: string;
+    };
     throw new Error(data.error ?? "Request failed");
   }
 

@@ -8,13 +8,13 @@ import { Card } from "../ui/card";
 import { Input } from "../ui/input";
 import { Progress } from "../ui/progress";
 
-const ENTITY_COLORS = [
-  "#cba6f7",
-  "#94e2d5",
-  "#f9e2af",
-  "#89b4fa",
-  "#fab387",
-  "#f5c2e7",
+const ACCENT_COLORS = [
+  "var(--mauve)",
+  "var(--teal)",
+  "var(--yellow)",
+  "var(--blue)",
+  "var(--peach)",
+  "var(--pink)",
 ];
 
 const FINE_PRINT = [
@@ -53,7 +53,7 @@ export function HomePage() {
 
   return (
     <div className="flex flex-col gap-6 sm:gap-8">
-      <div className="search">
+      <div className="input-icon">
         <Search aria-hidden="true" />
         <Input
           value={query}
@@ -70,9 +70,9 @@ export function HomePage() {
             <Link
               to={`/exam/${featured.id}`}
               className="block"
-              style={{ "--entity-color": ENTITY_COLORS[0] } as CSSProperties}
+              style={{ "--accent": ACCENT_COLORS[0] } as CSSProperties}
             >
-              <article className="entity-card gap-5 p-6 sm:p-8 sm:pl-10">
+              <article className="accent-card flex flex-col gap-5 p-6 sm:p-8 sm:pl-10">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <span className="eyebrow mb-0">Latest trauma</span>
                   <span className="chip">
@@ -80,9 +80,9 @@ export function HomePage() {
                   </span>
                 </div>
                 <div>
-                  <span className="entity-code">{featured.courseCode}</span>
-                  <h2 className="entity-title-lg mt-2">{featured.examName}</h2>
-                  <p className="entity-meta mt-3">{featured.termLabel}</p>
+                  <span className="cn-label cn-text-accent">{featured.courseCode}</span>
+                  <h2 className="cn-display-sm mt-2">{featured.examName}</h2>
+                  <p className="cn-meta mt-3">{featured.termLabel}</p>
                 </div>
                 <div className="flex flex-col gap-3">
                   <div className="stat-row">
@@ -103,7 +103,7 @@ export function HomePage() {
 
           <div className="grid gap-4 md:grid-cols-2">
             {isLoading && (
-              <p className="meta-line col-span-full animate-pulse">
+              <p className="cn-meta col-span-full animate-pulse">
                 SCANNING FOR VICTIMS...
               </p>
             )}
@@ -112,7 +112,7 @@ export function HomePage() {
               <Card className="col-span-full">
                 <div className="empty-state">
                   <strong>No suffering detected.</strong>
-                  <span className="copy">Be the first to complain.</span>
+                  <span className="cn-copy">Be the first to complain.</span>
                   <Link to="/create" className="mt-2">
                     <Button>Submit disaster</Button>
                   </Link>
@@ -129,16 +129,16 @@ export function HomePage() {
                   className="block"
                   style={
                     {
-                      "--entity-color":
-                        ENTITY_COLORS[(index + 1) % ENTITY_COLORS.length],
+                      "--accent":
+                        ACCENT_COLORS[(index + 1) % ACCENT_COLORS.length],
                     } as CSSProperties
                   }
                 >
-                  <article className="entity-card h-full justify-between gap-5">
+                  <article className="accent-card flex h-full flex-col justify-between gap-5">
                     <div>
-                      <span className="entity-code">{exam.courseCode}</span>
-                      <h3 className="entity-title mt-2">{exam.examName}</h3>
-                      <p className="entity-meta mt-2">{exam.termLabel}</p>
+                      <span className="cn-label cn-text-accent">{exam.courseCode}</span>
+                      <h3 className="cn-title mt-2">{exam.examName}</h3>
+                      <p className="cn-meta mt-2">{exam.termLabel}</p>
                     </div>
                     <div className="flex flex-col gap-2">
                       <div className="stat-row">
@@ -146,7 +146,7 @@ export function HomePage() {
                         <b>{share}%</b>
                       </div>
                       <Progress value={share} />
-                      <p className="entity-meta">{exam.voteCount} VICTIMS</p>
+                      <p className="cn-meta">{exam.voteCount} VICTIMS</p>
                     </div>
                   </article>
                 </Link>
@@ -168,15 +168,15 @@ export function HomePage() {
         </div>
 
         <aside className="flex min-w-0 flex-col gap-6 lg:gap-8">
-          <Card className="tilted">
-            <h2 className="section-title">Fine print</h2>
+          <Card className="is-tilted">
+            <h2 className="cn-title">Fine print</h2>
             <ul className="mt-5 flex flex-col gap-4">
               {FINE_PRINT.map((rule, index) => (
                 <li key={rule} className="flex items-start gap-3">
                   <span className="mark-solid">
                     {String(index + 1).padStart(2, "0")}
                   </span>
-                  <span className="copy">{rule}</span>
+                  <span className="cn-copy">{rule}</span>
                 </li>
               ))}
             </ul>
@@ -184,10 +184,10 @@ export function HomePage() {
 
           <Card>
             <div className="flex items-center gap-3">
-              <AlertCircle className="h-5 w-5 text-[var(--mauve)]" />
-              <h2 className="section-title">What is this?</h2>
+              <AlertCircle className="h-5 w-5 text-mauve" />
+              <h2 className="cn-title">What is this?</h2>
             </div>
-            <p className="copy mt-4">
+            <p className="cn-copy mt-4">
               A crowd-sourced pulse of Waterloo&apos;s academic brutality. Find
               out if you&apos;re the only one who got railed, or if it was a
               collective execution.

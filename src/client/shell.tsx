@@ -26,7 +26,7 @@ export function AppShell() {
         </div>
       </main>
 
-      <footer className="shell-footer">
+      <footer className="footer-neu">
         <span>CONSENSTAT</span>
         <p>© 2026 · MADE WITH HATE IN WATERLOO</p>
       </footer>

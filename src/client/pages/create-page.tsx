@@ -99,7 +99,7 @@ export function CreatePage() {
 
   return (
     <div className="flex flex-col gap-5 sm:gap-6">
-      <Link to="/" className="back-link">
+      <Link to="/" className="btn btn-secondary back-link">
         <ArrowLeft className="h-4 w-4" aria-hidden="true" />
         Back to list
       </Link>
@@ -144,14 +144,14 @@ export function CreatePage() {
           </div>
 
           <fieldset className="border-0 p-0">
-            <legend className="field-label">When did it happen?</legend>
+            <legend className="cn-label mb-2">When did it happen?</legend>
             <div className="segmented">
               {termSeasons.map((season) => {
                 const active = form.termSeason === season.value;
                 return (
                   <label
                     key={season.value}
-                    className={active ? "is-active" : undefined}
+                    className={active ? "active" : undefined}
                   >
                     <input
                       type="radio"
@@ -191,8 +191,8 @@ export function CreatePage() {
             </div>
           )}
 
-          <div className="flex flex-col gap-4 border-t border-[var(--surface-0)] pt-6 md:flex-row md:items-center md:justify-between">
-            <p className="meta-line max-w-md">
+          <div className="flex flex-col gap-4 border-t border-surface-0 pt-6 md:flex-row md:items-center md:justify-between">
+            <p className="cn-meta max-w-md">
               WE&apos;LL CHECK IF THIS VIOLATION HAS ALREADY BEEN REPORTED.
             </p>
             <Button
@@ -242,12 +242,12 @@ export function CreatePage() {
                 to={`/exam/${candidate.id}`}
                 onClick={() => setShowDialog(false)}
                 className="block"
-                style={{ "--entity-color": "var(--peach)" } as CSSProperties}
+                style={{ "--accent": "var(--peach)" } as CSSProperties}
               >
-                <article className="entity-card gap-2">
-                  <h3 className="entity-title">{candidate.examName}</h3>
-                  <p className="entity-meta">{candidate.termLabel}</p>
-                  <p className="entity-code mt-1">
+                <article className="accent-card flex flex-col gap-2">
+                  <h3 className="cn-title">{candidate.examName}</h3>
+                  <p className="cn-meta">{candidate.termLabel}</p>
+                  <p className="cn-label cn-text-accent mt-1">
                     {candidate.matchType} · {Math.round(candidate.score * 100)}%
                     MATCH
                   </p>

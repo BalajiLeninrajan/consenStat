@@ -1,40 +1,20 @@
 import type { Config } from "tailwindcss";
 
 export default {
+  presets: [require("catppuccin-neu/tailwind/preset.cjs")],
   content: ["./index.html", "./src/client/**/*.{ts,tsx}"],
   theme: {
     extend: {
-      colors: {
-        crust: "var(--crust)",
-        mantle: "var(--mantle)",
-        base: "var(--base)",
-        surface: {
-          0: "var(--surface-0)",
-          1: "var(--surface-1)",
-          2: "var(--surface-2)",
+      /* Point animate-pulse at its own keyframes: Tailwind's default emits
+         unlayered `@keyframes pulse`, which would clobber the package's pulse
+         (the .live-dot halo ping). */
+      keyframes: {
+        "tw-pulse": {
+          "50%": { opacity: "0.5" },
         },
-        overlay: {
-          0: "var(--overlay-0)",
-          1: "var(--overlay-1)",
-          2: "var(--overlay-2)",
-        },
-        subtext: {
-          0: "var(--subtext-0)",
-          1: "var(--subtext-1)",
-        },
-        text: "var(--text)",
-        mauve: "var(--mauve)",
-        pink: "var(--pink)",
-        red: "var(--red)",
-        peach: "var(--peach)",
-        yellow: "var(--yellow)",
-        green: "var(--green)",
-        teal: "var(--teal)",
-        blue: "var(--blue)",
       },
-      fontFamily: {
-        sans: ["var(--sans)"],
-        mono: ["var(--mono)"],
+      animation: {
+        pulse: "tw-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
       },
     },
   },

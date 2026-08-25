@@ -39,7 +39,7 @@ function voteStorageKey(examId: string) {
 
 function BackLink() {
   return (
-    <Link to="/" className="back-link">
+    <Link to="/" className="btn btn-secondary back-link">
       <ArrowLeft className="h-4 w-4" aria-hidden="true" />
       Back to list
     </Link>
@@ -162,7 +162,7 @@ export function ExamPage() {
   if (exam.isLoading) {
     return (
       <Card>
-        <p className="meta-line animate-pulse">LOADING THE TRAUMA REPORT...</p>
+        <p className="cn-meta animate-pulse">LOADING THE TRAUMA REPORT...</p>
       </Card>
     );
   }
@@ -203,17 +203,17 @@ export function ExamPage() {
             <div className="mt-6 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center">
               <div
                 className="metric is-hero"
-                style={{ "--tone": "var(--green)" } as CSSProperties}
+                style={{ "--accent": "var(--green)" } as CSSProperties}
               >
                 <span>Fair</span>
                 <strong>{exam.data.touchingCount}</strong>
               </div>
-              <span className="font-mono text-[9px] font-bold tracking-[0.08em] text-[var(--overlay-0)]">
+              <span className="cn-microlabel cn-text-overlay-0">
                 VS
               </span>
               <div
                 className="metric is-hero items-end text-right"
-                style={{ "--tone": "var(--red)" } as CSSProperties}
+                style={{ "--accent": "var(--red)" } as CSSProperties}
               >
                 <span>Fucked</span>
                 <strong>{exam.data.touchyCount}</strong>
@@ -228,7 +228,7 @@ export function ExamPage() {
                 .getElementById("vote-section")
                 ?.scrollIntoView({ behavior: "smooth" });
             }}
-            className="btn-text mt-6 w-full justify-center sm:hidden"
+            className="btn-text mt-6 flex w-full items-center justify-center gap-2 sm:hidden"
           >
             Scroll to vote
             <ChevronDown className="h-4 w-4" />
@@ -238,8 +238,8 @@ export function ExamPage() {
         <Card id="vote-section">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
-              <h2 className="section-title">Confess</h2>
-              <p className="copy mt-2">
+              <h2 className="cn-title">Confess</h2>
+              <p className="cn-copy mt-2">
                 How was the test? Be honest, no one is watching.
               </p>
             </div>
@@ -264,7 +264,7 @@ export function ExamPage() {
               return (
                 <label
                   key={option.value}
-                  className={`justify-between ${active ? "is-active" : ""} ${
+                  className={`justify-between ${active ? "active" : ""} ${
                     vote.isPending ? "pointer-events-none opacity-60" : ""
                   }`}
                 >
@@ -283,11 +283,11 @@ export function ExamPage() {
             })}
           </fieldset>
 
-          <div className="mt-7 flex flex-col gap-2 border-t border-[var(--surface-0)] pt-5">
-            <p className="meta-line">
+          <div className="mt-7 flex flex-col gap-2 border-t border-surface-0 pt-5">
+            <p className="cn-meta">
               VICTIMS COUNTED: <b>{exam.data.voteCount}</b>
             </p>
-            <p className="meta-line">
+            <p className="cn-meta">
               LAST CRY FOR HELP:{" "}
               <b>
                 {exam.data.lastVotedAt
