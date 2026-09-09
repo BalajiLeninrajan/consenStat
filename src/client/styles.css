@@ -1,8 +1,9 @@
-/* Layer order: Tailwind's preflight sits BELOW the package layers so the
+/* Layer order: Tailwind's preflight sits below the package layers so the
    package recipes (button fills, input placeholders) beat its element resets,
-   while Tailwind's unlayered utility output still beats everything — JSX
-   utility overrides keep winning. */
-@layer tw-base, cn.tokens, cn.utilities, cn.recipes;
+   while Tailwind's unlayered utility output still beats everything, so JSX
+   utility overrides keep winning. The package's index.css declares the same
+   tokens, recipes, utilities order; keep the two in step. */
+@layer tw-base, cn.tokens, cn.recipes, cn.utilities;
 
 @import "catppuccin-neu/css/index.css";
 
@@ -12,55 +13,16 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── App-specific layer (unlayered — wins over the package) ─────────────── */
+/* App-specific rules. Unlayered, so they win over the package. */
 
-/* Shell layout — the ambient wash comes from the package's .app-shell. */
-.app-shell {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-.shell-main {
-  flex: 1;
-  width: min(1440px, calc(100% - 40px));
-  min-width: 0;
-  margin: 0 auto;
-  position: relative;
-  z-index: 1;
-  padding: clamp(24px, 4vw, 46px) 0;
-}
-
-/* Two-region topbar: wordmark left, actions right (no center nav column). */
-.topbar {
-  grid-template-columns: 1fr auto;
-}
-
-.wordmark {
-  display: inline-block;
-  color: var(--text);
-  font-size: 22px;
-  font-weight: 820;
-  letter-spacing: -0.045em;
-  line-height: 1;
-}
-.wordmark em {
-  color: var(--mauve);
-  font-style: normal;
-}
-
-/* Labels that wrap their input need a gap between text and well. */
-.field label > .input {
-  margin-top: 7px;
-}
-
-/* Hero consensus bar — the one oversized progress track. */
+/* Hero consensus bar: the one oversized progress track. */
 .progress-track.is-tall {
   height: 12px;
 }
 
-/* Back affordance — a .btn.btn-secondary link in mauve; on mobile it drops to
-   the end of the page and hangs into the footer at a slight tilt. */
+/* Back affordance: a .btn.btn-secondary link in mauve. On mobile it drops to
+   the end of the page and hangs into the footer at a slight tilt. The press
+   transition comes from .btn, so the tilt rides the spring like any button. */
 .back-link {
   align-self: flex-start;
   color: var(--mauve);
@@ -69,7 +31,7 @@
 @media (max-width: 760px) {
   /* Lift main above the footer so the tilted button breaks the footer rule
      line rather than being crossed by it. */
-  .shell-main {
+  .page-main {
     z-index: 3;
   }
   .back-link {

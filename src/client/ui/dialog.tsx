@@ -31,7 +31,7 @@ export function Dialog({
             onClick={onClose}
             className="btn-icon shrink-0"
           >
-            <X className="h-4 w-4" />
+            <X />
           </button>
         </header>
         <div className="p-5">{children}</div>

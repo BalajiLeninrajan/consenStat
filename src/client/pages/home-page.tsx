@@ -72,7 +72,7 @@ export function HomePage() {
               className="block"
               style={{ "--accent": ACCENT_COLORS[0] } as CSSProperties}
             >
-              <article className="accent-card flex flex-col gap-5 p-6 sm:p-8 sm:pl-10">
+              <article className="accent-card flex flex-col gap-5 p-6 sm:p-8">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <span className="eyebrow mb-0">Latest trauma</span>
                   <span className="chip">
@@ -181,7 +181,7 @@ export function HomePage() {
 
           <Card>
             <div className="flex items-center gap-3">
-              <AlertCircle className="h-5 w-5 text-mauve" />
+              <AlertCircle className="cn-icon-lg text-mauve" />
               <h2 className="cn-title">What is this?</h2>
             </div>
             <p className="cn-copy mt-4">

@@ -6,7 +6,7 @@
       "name": "consenstat",
       "dependencies": {
         "@tanstack/react-query": "^5.80.7",
-        "catppuccin-neu": "github:BalajiLeninrajan/catppuccin-neu#v0.1.3",
+        "catppuccin-neu": "github:BalajiLeninrajan/catppuccin-neu#v0.3.0",
         "clsx": "^2.1.1",
         "hono": "^4.8.3",
         "lucide-react": "^0.523.0",
@@ -313,7 +313,7 @@
 
     "caniuse-lite": ["caniuse-lite@1.0.30001777", "", {}, "sha512-tmN+fJxroPndC74efCdp12j+0rk0RHwV5Jwa1zWaFVyw2ZxAuPeG8ZgWC3Wz7uSjT3qMRQ5XHZ4COgQmsCMJAQ=="],
 
-    "catppuccin-neu": ["catppuccin-neu@github:BalajiLeninrajan/catppuccin-neu#114914e", { "bin": { "catppuccin-neu-sync": "scripts/sync.mjs" } }, "BalajiLeninrajan-catppuccin-neu-114914e", "sha512-ZVQ/VZ+q2ATglrug92qeWQz/H+ITFTZ72nEh2OQHzos3MZuefBQZHUlzwP9bK+95mEB3wVIQVb1WQFRamoceiQ=="],
+    "catppuccin-neu": ["catppuccin-neu@github:BalajiLeninrajan/catppuccin-neu#0020e8e", { "bin": { "catppuccin-neu-sync": "scripts/sync.mjs" } }, "BalajiLeninrajan-catppuccin-neu-0020e8e", "sha512-WVqoxdIthjAx1HR+3JotPJSLfGpcaIIoj43+tap6LM+pagRAM3zHDlOdwGk3yj3xJYWochAcpxQCuVtom6tsTw=="],
 
     "chokidar": ["chokidar@3.6.0", "", { "dependencies": { "anymatch": "~3.1.2", "braces": "~3.0.2", "glob-parent": "~5.1.2", "is-binary-path": "~2.1.0", "is-glob": "~4.0.1", "normalize-path": "~3.0.0", "readdirp": "~3.6.0" }, "optionalDependencies": { "fsevents": "~2.3.2" } }, "sha512-7VT13fmjotKpGipCW9JEQAusEPE+Ei8nl6/g4FBAmIm0GOOLMua9NDDo/DWp0ZAxCr3cPq5ZpBqmPAQgDda2Pw=="],
 
