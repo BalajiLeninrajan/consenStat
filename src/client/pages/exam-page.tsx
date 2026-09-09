@@ -40,7 +40,7 @@ function voteStorageKey(examId: string) {
 function BackLink() {
   return (
     <Link to="/" className="btn btn-secondary back-link">
-      <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+      <ArrowLeft aria-hidden="true" />
       Back to list
     </Link>
   );
@@ -236,7 +236,7 @@ export function ExamPage() {
             className="btn-text mt-6 flex w-full items-center justify-center gap-2 sm:hidden"
           >
             Scroll to vote
-            <ChevronDown className="h-4 w-4" />
+            <ChevronDown />
           </button>
         </Card>
 

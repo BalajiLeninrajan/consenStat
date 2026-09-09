@@ -5,8 +5,8 @@ export function AppShell() {
 
   return (
     <div className="app-shell">
-      <header className="topbar">
-        <Link to="/" className="wordmark">
+      <header className="topbar is-split">
+        <Link to="/" className="wordmark is-lg">
           Consen<em>Stat</em>
         </Link>
         <div className="flex shrink-0 items-center gap-3">
@@ -18,7 +18,7 @@ export function AppShell() {
         </div>
       </header>
 
-      <main className="shell-main">
+      <main className="page-main">
         {/* Keyed on the path so the enter animation re-runs on each route. */}
         <div key={location.pathname} className="page-enter">
           <Outlet />

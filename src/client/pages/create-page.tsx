@@ -100,7 +100,7 @@ export function CreatePage() {
   return (
     <div className="flex flex-col gap-5 sm:gap-6">
       <Link to="/" className="btn btn-secondary back-link">
-        <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+        <ArrowLeft aria-hidden="true" />
         Back to list
       </Link>
 
@@ -115,6 +115,7 @@ export function CreatePage() {
             <label>
               Faculty
               <Input
+                className="cn-mt-8"
                 value={form.faculty}
                 onChange={(event) =>
                   updateField("faculty", event.target.value.toUpperCase())
@@ -125,6 +126,7 @@ export function CreatePage() {
             <label>
               Course number
               <Input
+                className="cn-mt-8"
                 value={form.courseNumber}
                 onChange={(event) =>
                   updateField("courseNumber", event.target.value.toUpperCase())
@@ -135,6 +137,7 @@ export function CreatePage() {
             <label>
               Year
               <Input
+                className="cn-mt-8"
                 value={form.termYear}
                 onChange={(event) => updateField("termYear", event.target.value)}
                 inputMode="numeric"
@@ -186,7 +189,7 @@ export function CreatePage() {
               className="banner"
               style={{ "--tone": "var(--red)" } as CSSProperties}
             >
-              <AlertTriangle className="h-4 w-4 shrink-0" />
+              <AlertTriangle />
               {submitError.message}
             </div>
           )}
@@ -227,7 +230,7 @@ export function CreatePage() {
               } as CSSProperties
             }
           >
-            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
+            <AlertTriangle />
             <span>
               {duplicates?.decision === "block"
                 ? "This exact exam already exists. Don't be redundant, we have enough of that in class."
