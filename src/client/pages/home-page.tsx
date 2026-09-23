@@ -3,6 +3,7 @@ import { Search } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { getRecentExams, searchExams, type ExamSummary } from "../lib/api";
+import { termClass } from "../lib/term";
 import { touchingShare } from "../lib/verdict";
 import { Input } from "../ui/input";
 import { MarkingInstructions } from "../ui/marking-instructions";
@@ -92,7 +93,7 @@ function Question({
           {exam.courseCode} {exam.examName}
         </strong>
         <span className="cn-meta">
-          {exam.termLabel} · {votes}
+          <span className={termClass(exam.termLabel)}>{exam.termLabel}</span> · {votes}
           {fresh ? `, ${fresh} just now` : ""}
         </span>
       </span>
