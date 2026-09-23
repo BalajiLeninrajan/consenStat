@@ -1,7 +1,8 @@
 /* ConsenStat's own marks. Home is an answer sheet: every exam is a numbered
    question and the class's votes are the filled bubbles. The exam page is a
    tally: one stroke per vote, struck through in fives. Mauve means touching
-   on both, and a touchy vote is always the carved, uncoloured mark. The rest
+   on both. A touchy vote is the carved, uncoloured bubble on home and a red
+   stroke on the tally. The rest
    of the page is package recipes. */
 
 .app-shell { --page-width: 1180px; }
@@ -35,10 +36,10 @@
 .cs-bubble.is-filled { background: var(--mauve); border-color: transparent; box-shadow: none; }
 .cs-scale { display: flex; gap: var(--space-2); }
 
-/* A question row: timing mark, number, exam, scale, share, verdict. */
+/* A question row: timing mark, number, exam, scale, share. */
 .cs-q, .cs-heads {
   display: grid;
-  grid-template-columns: 6px 22px minmax(0, 1fr) 232px 52px 148px;
+  grid-template-columns: 6px 22px minmax(0, 1fr) 232px 52px;
   gap: var(--space-4);
   align-items: center;
 }
@@ -48,12 +49,11 @@
 .cs-heads > :nth-child(4) { display: flex; justify-content: space-between; }
 .cs-heads > :nth-child(5) { text-align: right; }
 .cs-exam { display: grid; gap: 2px; min-width: 0; }
-/* Bubbles and verdict share a wrapper so a phone row can put them on one
+/* The bubbles sit in a wrapper so a phone row can give them their own
    line. On the desktop grid it steps aside. */
 .cs-mark { display: contents; }
 .cs-q > b { grid-column: 5; grid-row: 1; }
 .cs-mark > .cs-scale { grid-column: 4; grid-row: 1; }
-.cs-mark > .cs-says { grid-column: 6; grid-row: 1; }
 
 /* Timing mark: the notch a sheet reader counts rows by. It sits inside the
    row padding so it never meets the panel edge. */
@@ -102,7 +102,7 @@
   animation-delay: calc(var(--g, 0) * 18ms + 90ms);
 }
 .cs-ink-fair { --cs-ink: var(--mauve); }
-.cs-ink-wrecked { --cs-ink: var(--overlay-0); }
+.cs-ink-wrecked { --cs-ink: var(--red); }
 
 /* M5: bubbles are pencilled in and strokes drawn once, on first render.
    From-only keyframes fall back to the real state. */
@@ -146,12 +146,10 @@
     gap: var(--space-3);
     margin-top: var(--space-1);
   }
-  .cs-mark > .cs-says { text-align: right; }
 }
 @media (max-width: 520px) {
   .cs-q { grid-template-columns: 22px minmax(0, 1fr) auto; grid-template-areas: "n e s" "m m m"; }
   .cs-q > .cs-timing { display: none; }
-  /* Small enough that the longest verdict fits beside the bubbles at 390. */
   .cs-scale { gap: 4px; }
   .cs-scale > .cs-bubble { width: 12px; height: 12px; }
   .cs-sheet { padding: var(--space-4); }

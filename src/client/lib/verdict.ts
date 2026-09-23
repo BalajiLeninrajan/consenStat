@@ -15,13 +15,6 @@ export function verdictOf(touching: number, total: number): Verdict {
   return "everyone";
 }
 
-export const SHORT_VERDICT: Record<Verdict, string> = {
-  none: "No votes yet",
-  you: "Mostly just you",
-  split: "Split",
-  everyone: "Everyone got wrecked",
-};
-
 // The exam page's answer to its own headline.
 export function verdictSentence(touchy: number, total: number, verdict: Verdict) {
   const wrecked = `${touchy} of ${total} got wrecked.`;

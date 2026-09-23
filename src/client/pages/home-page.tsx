@@ -3,7 +3,7 @@ import { Search } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { getRecentExams, searchExams, type ExamSummary } from "../lib/api";
-import { SHORT_VERDICT, touchingShare, verdictOf } from "../lib/verdict";
+import { touchingShare } from "../lib/verdict";
 import { Input } from "../ui/input";
 import { MarkingInstructions } from "../ui/marking-instructions";
 
@@ -101,9 +101,6 @@ function Question({
       </b>
       <span className="cs-mark">
         <Scale touching={exam.touchingCount} total={total} />
-        <span className="cs-says">
-          {SHORT_VERDICT[verdictOf(exam.touchingCount, total)]}
-        </span>
       </span>
     </Link>
   );
@@ -204,7 +201,6 @@ export function HomePage() {
               <span>100%</span>
             </span>
             <span>Touching</span>
-            <span>Verdict</span>
           </div>
         )}
 
@@ -259,23 +255,7 @@ export function HomePage() {
       </section>
 
       <aside className="cs-aside">
-        <MarkingInstructions>
-          <div
-            className="cn-row cn-wrap cn-gap-24 cn-meta border-t border-surface-0 pt-4"
-            aria-hidden="true"
-          >
-            <span className="cn-row">
-              <span className="cs-bubble is-filled" />
-              Right
-            </span>
-            <span className="cn-row">
-              <span className="cs-bubble">✓</span>
-              <span className="cs-bubble">✕</span>
-              <span className="cs-bubble">·</span>
-              Wrong
-            </span>
-          </div>
-        </MarkingInstructions>
+        <MarkingInstructions />
         <section className="cn-stack cn-gap-8">
           <h2 className="cn-name cn-m-0">What is this?</h2>
           <p className="cn-copy cn-m-0">

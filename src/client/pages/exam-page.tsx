@@ -238,9 +238,9 @@ export function ExamPage() {
     count === 0 ? 0 : Math.max(1, Math.round(count / scale));
   const lastVote = ago(data.lastVotedAt);
 
-  const lines: { key: Line; label: string; hint: string; count: number }[] = [
-    { key: "fair", label: "Touching", hint: "fair", count: data.touchingCount },
-    { key: "wrecked", label: "Touchy", hint: "wrecked", count: data.touchyCount },
+  const lines: { key: Line; label: string; count: number }[] = [
+    { key: "fair", label: "Touching", count: data.touchingCount },
+    { key: "wrecked", label: "Touchy", count: data.touchyCount },
   ];
 
   return (
@@ -290,10 +290,7 @@ export function ExamPage() {
             {flash[line.key] > 0 && (
               <span key={flash[line.key]} className="cs-flash" aria-hidden="true" />
             )}
-            <span className="cn-stack cn-gap-4">
-              <span className="cn-label">{line.label}</span>
-              <span className="cn-meta">{line.hint}</span>
-            </span>
+            <span className="cn-label">{line.label}</span>
             <Tally strokes={strokes(line.count)} />
             <b className="cn-value">{line.count}</b>
           </div>
