@@ -9,7 +9,7 @@ export function AppShell() {
         <Link to="/" className="wordmark is-lg">
           Consen<em>Stat</em>
         </Link>
-        <div className="flex shrink-0 items-center gap-3">
+        <div className="cn-row cn-gap-12">
           {location.pathname !== "/create" && (
             <Link to="/create" className="btn btn-primary">
               List new exam
@@ -18,11 +18,10 @@ export function AppShell() {
         </div>
       </header>
 
+      {/* Each page puts .page-enter on its own section container, so the
+          sections assemble 40ms apart. */}
       <main className="page-main">
-        {/* Keyed on the path so the enter animation re-runs on each route. */}
-        <div key={location.pathname} className="page-enter">
-          <Outlet />
-        </div>
+        <Outlet />
       </main>
 
       <footer className="page-footer">

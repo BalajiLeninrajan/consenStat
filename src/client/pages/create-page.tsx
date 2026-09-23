@@ -3,6 +3,7 @@ import { AlertTriangle, ArrowLeft } from "lucide-react";
 import { FormEvent, useMemo, useState, type CSSProperties } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { createExam, duplicateCheck, type DuplicateResponse } from "../lib/api";
+import { termClass } from "../lib/term";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 import { Dialog } from "../ui/dialog";
@@ -98,7 +99,7 @@ export function CreatePage() {
   const isBusy = duplicateMutation.isPending || createMutation.isPending;
 
   return (
-    <div className="flex flex-col gap-5 sm:gap-6">
+    <div className="page-enter flex flex-col gap-5 sm:gap-6">
       <Link to="/" className="btn-text inline-flex items-center gap-2 self-start">
         <ArrowLeft aria-hidden="true" />
         Back to list
@@ -244,7 +245,7 @@ export function CreatePage() {
               >
                 <article className="accent-card flex flex-col gap-2">
                   <h3 className="cn-title">{candidate.examName}</h3>
-                  <p className="cn-meta">{candidate.termLabel}</p>
+                  <p className={`cn-meta ${termClass(candidate.termLabel)}`}>{candidate.termLabel}</p>
                   <p className="cn-label mt-1">
                     {candidate.matchType} · {Math.round(candidate.score * 100)}% match
                   </p>
