@@ -3,6 +3,7 @@ import { AlertTriangle, ArrowLeft } from "lucide-react";
 import { FormEvent, useMemo, useState, type CSSProperties } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { createExam, duplicateCheck, type DuplicateResponse } from "../lib/api";
+import { termClass } from "../lib/term";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 import { Dialog } from "../ui/dialog";
@@ -98,14 +99,13 @@ export function CreatePage() {
   const isBusy = duplicateMutation.isPending || createMutation.isPending;
 
   return (
-    <div className="flex flex-col gap-5 sm:gap-6">
-      <Link to="/" className="btn btn-secondary back-link">
+    <div className="page-enter flex flex-col gap-5 sm:gap-6">
+      <Link to="/" className="btn-text inline-flex items-center gap-2 self-start">
         <ArrowLeft aria-hidden="true" />
         Back to list
       </Link>
 
       <Card className="mx-auto w-full max-w-[62rem] p-6 sm:p-9">
-        <p className="eyebrow">New submission</p>
         <h1 className="display-title max-w-[18ch]">
           Add new <em>trauma</em> to the collection.
         </h1>
@@ -194,15 +194,11 @@ export function CreatePage() {
             </div>
           )}
 
-          <div className="flex flex-col gap-4 border-t border-surface-0 pt-6 md:flex-row md:items-center md:justify-between">
+          <div className="flex flex-col items-start gap-4 border-t border-surface-0 pt-6 md:flex-row md:items-center md:justify-between">
             <p className="cn-meta max-w-md">
               We&apos;ll check if this violation has already been reported.
             </p>
-            <Button
-              type="submit"
-              disabled={!canSubmit || isBusy}
-              className="w-full md:w-auto md:min-w-[13rem]"
-            >
+            <Button type="submit" disabled={!canSubmit || isBusy}>
               {createMutation.isPending ? "Logging…" : "Commit exam"}
             </Button>
           </div>
@@ -249,8 +245,8 @@ export function CreatePage() {
               >
                 <article className="accent-card flex flex-col gap-2">
                   <h3 className="cn-title">{candidate.examName}</h3>
-                  <p className="cn-meta">{candidate.termLabel}</p>
-                  <p className="cn-label cn-text-accent mt-1">
+                  <p className={`cn-meta ${termClass(candidate.termLabel)}`}>{candidate.termLabel}</p>
+                  <p className="cn-label mt-1">
                     {candidate.matchType} · {Math.round(candidate.score * 100)}% match
                   </p>
                 </article>
@@ -258,7 +254,7 @@ export function CreatePage() {
             ))}
           </div>
 
-          <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
+          <div className="flex flex-wrap justify-end gap-3">
             <Button variant="secondary" onClick={() => setShowDialog(false)}>
               Back out
             </Button>

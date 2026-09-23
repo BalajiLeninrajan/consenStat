@@ -8,6 +8,7 @@ import { CreatePage } from "./pages/create-page";
 import { ExamPage } from "./pages/exam-page";
 import { ToastProvider } from "./ui/toast";
 import "./styles.css";
+import "./cs.css";
 
 const queryClient = new QueryClient();
 
