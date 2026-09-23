@@ -1,0 +1,142 @@
+/* ConsenStat's own marks. Home is an answer sheet: every exam is a numbered
+   question and the class's votes are the filled bubbles. The exam page is a
+   tally: one stroke per vote, struck through in fives. Mauve means touching
+   on both, and a touchy vote is always the carved, uncoloured mark. The rest
+   of the page is package recipes. */
+
+.app-shell { --page-width: 1180px; }
+
+/* Both screens: the page's sections on the left, the tilted aside beside
+   them. Every section is a direct child so .page-enter staggers them. */
+.cs-page {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: var(--space-6);
+  align-items: start;
+}
+.cs-page > * { grid-column: 1; }
+.cs-page > .cs-aside { grid-column: 2; grid-row: 2 / span var(--cs-aside-rows, 1); display: grid; gap: var(--space-6); }
+.cs-intro { display: grid; gap: var(--space-4); max-width: 760px; }
+@media (max-width: 1060px) {
+  .cs-page { grid-template-columns: minmax(0, 1fr); }
+  .cs-page > .cs-aside { grid-column: 1; grid-row: auto; }
+}
+
+/* Bubble: empty is carved like a radio well, filled is the data mark. */
+.cs-bubble {
+  width: 16px; height: 16px; flex: 0 0 auto;
+  display: inline-grid; place-items: center;
+  border: 1px solid var(--control-edge);
+  border-radius: 50%;
+  box-shadow: var(--neu-inset-soft);
+  color: var(--overlay-2);
+  font-size: 11px;
+}
+.cs-bubble.is-filled { background: var(--mauve); border-color: transparent; box-shadow: none; }
+.cs-scale { display: flex; gap: var(--space-2); }
+
+/* A question row: timing mark, number, exam, scale, share, verdict. */
+.cs-q, .cs-heads {
+  display: grid;
+  grid-template-columns: 6px 22px minmax(0, 1fr) 232px 52px 148px;
+  gap: var(--space-4);
+  align-items: center;
+}
+.cs-q { min-height: 64px; color: inherit; text-decoration: none; }
+.cs-q > b { margin: 0; text-align: right; }
+.cs-heads { padding: var(--space-3) var(--space-4) var(--space-2); border-bottom: 1px solid var(--surface-0); }
+.cs-heads > :nth-child(4) { display: flex; justify-content: space-between; }
+.cs-heads > :nth-child(5) { text-align: right; }
+.cs-exam { display: grid; gap: 2px; min-width: 0; }
+
+/* Timing mark: the notch a sheet reader counts rows by. It sits inside the
+   row padding so it never meets the panel edge. */
+.cs-timing { width: 6px; height: 18px; border-radius: 2px; background: var(--surface-2); }
+
+.cs-search { padding: var(--space-4); border-bottom: 1px solid var(--surface-0); }
+.cs-search .input-icon { max-width: none; }
+
+/* The exam page's one number, at the scale of the question it answers. */
+.cs-answer { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--space-5); }
+.cs-figure {
+  margin: 0;
+  font: var(--cn-type-display-weight) clamp(104px, 12vw, 168px)/.8 var(--sans);
+  letter-spacing: -.06em;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+.cs-figure small { margin-left: .04em; font-size: .42em; letter-spacing: -.03em; color: var(--overlay-2); }
+.cs-verdict { display: grid; gap: var(--space-2); max-width: 400px; padding-bottom: var(--space-1); }
+
+/* The tally sheet. Colour sits on the strokes, labels and counts stay text. */
+.cs-sheet { display: grid; gap: var(--space-4); padding: var(--space-5) var(--space-5) var(--space-4); }
+.cs-line {
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-4);
+  margin-inline: calc(-1 * var(--space-3));
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--cn-radius-control);
+}
+.cs-tally { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-3); min-height: 28px; }
+.cs-group { position: relative; display: inline-flex; gap: 5px; padding-inline: 2px; }
+.cs-group > i {
+  width: 3px; height: 28px; border-radius: 999px;
+  background: var(--cs-ink);
+  transform-origin: bottom;
+  animation: cs-draw var(--t-slow) var(--ease-out) backwards;
+  animation-delay: calc(var(--g, 0) * 18ms + var(--s, 0) * 12ms);
+}
+.cs-group > .cs-strike {
+  position: absolute; left: -3px; right: -3px; top: 50%;
+  width: auto; height: 3px; margin-top: -1px;
+  transform: rotate(-28deg);
+  transform-origin: left;
+  animation-name: cs-strike;
+  animation-delay: calc(var(--g, 0) * 18ms + 90ms);
+}
+.cs-ink-fair { --cs-ink: var(--mauve); }
+.cs-ink-wrecked { --cs-ink: var(--overlay-0); }
+
+/* M5: bubbles are pencilled in and strokes drawn once, on first render.
+   From-only keyframes fall back to the real state. */
+@keyframes cs-pencil { from { transform: scale(.2); opacity: 0; } }
+@keyframes cs-draw { from { transform: scaleY(0); } }
+@keyframes cs-strike { from { transform: rotate(-28deg) scaleX(0); } }
+.cs-scale > .is-filled { animation: cs-pencil var(--t-slow) var(--ease-out) backwards; animation-delay: calc(240ms + var(--i, 0) * 22ms); }
+
+/* M4: a count that changed under the reader lands at full strength and
+   bleeds out. The new count and "just now" text carry it without motion. */
+@keyframes cs-settle { from { background-color: color-mix(in srgb, var(--mauve) 14%, var(--base)); } }
+.cs-just-changed { animation: cs-settle 1.6s cubic-bezier(.33, .6, .2, 1); }
+
+@media (prefers-reduced-motion: reduce) {
+  .cs-scale > .is-filled, .cs-group > i, .cs-just-changed { animation: none; }
+}
+
+@media (max-width: 760px) {
+  .cs-heads { display: none; }
+  .cs-q {
+    grid-template-columns: 6px 22px minmax(0, 1fr) auto;
+    grid-template-areas: "t n e s" "t . b b" "t . v v";
+    gap: var(--space-2) var(--space-3);
+    padding-block: var(--space-4);
+  }
+  .cs-q > .cs-timing { grid-area: t; align-self: center; }
+  .cs-q > .cs-num { grid-area: n; }
+  .cs-q > .cs-exam { grid-area: e; }
+  .cs-q > b { grid-area: s; }
+  .cs-q > .cs-scale { grid-area: b; margin-top: var(--space-1); }
+  .cs-q > .cs-says { grid-area: v; }
+}
+@media (max-width: 520px) {
+  .cs-q { grid-template-columns: 22px minmax(0, 1fr) auto; grid-template-areas: "n e s" ". b b" ". v v"; }
+  .cs-q > .cs-timing { display: none; }
+  .cs-scale { gap: 6px; }
+  .cs-sheet { padding: var(--space-4); }
+  .cs-line { grid-template-columns: minmax(0, 1fr) auto; row-gap: var(--space-2); }
+  .cs-line > .cs-tally { grid-column: 1 / -1; grid-row: 2; gap: var(--space-2); }
+  .cs-group { gap: 4px; }
+  .cs-group > i { height: 24px; }
+}

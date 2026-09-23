@@ -98,7 +98,7 @@ export function CreatePage() {
   const isBusy = duplicateMutation.isPending || createMutation.isPending;
 
   return (
-    <div className="flex flex-col gap-5 sm:gap-6">
+    <div className="page-enter flex flex-col gap-5 sm:gap-6">
       <Link to="/" className="btn-text inline-flex items-center gap-2 self-start">
         <ArrowLeft aria-hidden="true" />
         Back to list
