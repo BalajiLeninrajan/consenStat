@@ -239,7 +239,7 @@ export function HomePage() {
           <footer className="panel-footer">
             <span className="cn-meta">
               {visibleItems.length} of {items.length}{" "}
-              {items.length === 1 ? "question" : "questions"}
+              {items.length === 1 ? "test" : "tests"}
             </span>
             {visibleCount < items.length && (
               <button
