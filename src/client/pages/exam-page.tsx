@@ -80,7 +80,9 @@ export function ExamPage() {
   const [liveStatus, setLiveStatus] = useState<"connecting" | "live" | "offline">(
     "connecting",
   );
-  const [changed, setChanged] = useState<Line | null>(null);
+  // A counter per line. Each bump remounts that line's flash, so back to
+  // back votes replay it and nothing waits on animationend.
+  const [flash, setFlash] = useState<Record<Line, number>>({ fair: 0, wrecked: 0 });
   const [, setNow] = useState(() => Date.now());
   // The reader's own vote is confirmed by the toast, so it doesn't settle.
   const ownVoteAt = useRef(0);
@@ -111,9 +113,17 @@ export function ExamPage() {
   useEffect(() => {
     if (fair === undefined || wrecked === undefined) return;
     const last = previous.current;
-    if (last && last.id === id && Date.now() - ownVoteAt.current > 2000) {
-      if (fair > last.fair) setChanged("fair");
-      else if (wrecked > last.wrecked) setChanged("wrecked");
+    if (!last || last.id !== id) {
+      setFlash({ fair: 0, wrecked: 0 });
+    } else if (Date.now() - ownVoteAt.current > 2000) {
+      const upFair = fair > last.fair;
+      const upWrecked = wrecked > last.wrecked;
+      if (upFair || upWrecked) {
+        setFlash((current) => ({
+          fair: current.fair + (upFair ? 1 : 0),
+          wrecked: current.wrecked + (upWrecked ? 1 : 0),
+        }));
+      }
     }
     previous.current = { id, fair, wrecked };
   }, [id, fair, wrecked]);
@@ -131,7 +141,8 @@ export function ExamPage() {
     const connect = () => {
       if (isDisposed) return;
 
-      setLiveStatus("connecting");
+      // A retry after a drop still reads as reconnecting.
+      setLiveStatus((current) => (current === "offline" ? current : "connecting"));
       socket = new WebSocket(socketUrl);
 
       socket.onopen = () => {
@@ -274,14 +285,11 @@ export function ExamPage() {
         className="cs-sheet well cn-bg-well"
         aria-label={`The tally: ${data.touchingCount} touching, ${data.touchyCount} touchy`}
       >
-        {total > 0 && lines.map((line) => (
-          <div
-            key={line.key}
-            className={`cs-line cs-ink-${line.key}${changed === line.key ? " cs-just-changed" : ""}`}
-            onAnimationEnd={(event) => {
-              if (event.target === event.currentTarget) setChanged(null);
-            }}
-          >
+        {lines.map((line) => (
+          <div key={line.key} className={`cs-line cs-ink-${line.key}`}>
+            {flash[line.key] > 0 && (
+              <span key={flash[line.key]} className="cs-flash" aria-hidden="true" />
+            )}
             <span className="cn-stack cn-gap-4">
               <span className="cn-label">{line.label}</span>
               <span className="cn-meta">{line.hint}</span>
@@ -293,7 +301,11 @@ export function ExamPage() {
         <p className="cn-meta cn-row cn-gap-8 cn-m-0">
           {liveStatus === "live" && <span className="live-dot" aria-hidden="true" />}
           <span>
-            {liveStatus === "live" ? "Live." : "Reconnecting."}{" "}
+            {liveStatus === "live"
+              ? "Live."
+              : liveStatus === "connecting"
+                ? "Connecting."
+                : "Reconnecting."}{" "}
             {total === 0
               ? "The first vote draws the first stroke."
               : `${scale === 1 ? "One stroke per vote" : `One stroke per ${scale} votes`}${
@@ -307,7 +319,7 @@ export function ExamPage() {
         <h2 id="your-turn" className="cn-title cn-m-0">
           {selectedVote ? "Changed your mind?" : "Your turn. How was it?"}
         </h2>
-        <fieldset className="cn-m-0 cn-p-0 border-0">
+        <fieldset className="cn-m-0 cn-p-0 border-0" disabled={vote.isPending}>
           <legend className="cn-sr-only">Vote on this exam</legend>
           <div className="segmented">
             {VOTE_OPTIONS.map((option) => {
@@ -316,7 +328,7 @@ export function ExamPage() {
                 <label
                   key={option.value}
                   className={`${active ? "active" : ""} ${
-                    vote.isPending ? "pointer-events-none opacity-60" : ""
+                    vote.isPending ? "opacity-60" : ""
                   }`}
                 >
                   <input

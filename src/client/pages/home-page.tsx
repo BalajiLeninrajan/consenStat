@@ -1,7 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { Search } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { getRecentExams, searchExams, type ExamSummary } from "../lib/api";
 import { SHORT_VERDICT, touchingShare, verdictOf } from "../lib/verdict";
 import { Input } from "../ui/input";
@@ -9,27 +9,33 @@ import { MarkingInstructions } from "../ui/marking-instructions";
 
 const PAGE = 8;
 
-// How many votes each exam took since the previous fetch. The first load
-// has nothing to compare against, so nothing counts as new.
-function useNewVotes(items: ExamSummary[] | undefined) {
+// How many votes each exam took between two fetches made while home is open.
+// Data from the cache predates this visit, so the first fetch after mount
+// only sets the baseline. Votes cast while away, your own included, never
+// read as "just now".
+function useNewVotes(items: ExamSummary[] | undefined, updatedAt: number) {
+  const mountedAt = useRef(Date.now());
   const previous = useRef<Map<number, number> | null>(null);
-  const [fresh, setFresh] = useState<Map<number, number>>(new Map());
+  const [fresh, setFresh] = useState<{ votes: Map<number, number>; at: number }>({
+    votes: new Map(),
+    at: 0,
+  });
 
   useEffect(() => {
-    if (!items) return;
+    if (!items || updatedAt < mountedAt.current) return;
     const last = previous.current;
-    const next = new Map<number, number>();
+    const votes = new Map<number, number>();
     if (last) {
       for (const exam of items) {
         const before = last.get(exam.id);
         if (before !== undefined && exam.voteCount > before) {
-          next.set(exam.id, exam.voteCount - before);
+          votes.set(exam.id, exam.voteCount - before);
         }
       }
     }
     previous.current = new Map(items.map((exam) => [exam.id, exam.voteCount]));
-    setFresh(next);
-  }, [items]);
+    setFresh({ votes, at: updatedAt });
+  }, [items, updatedAt]);
 
   return fresh;
 }
@@ -62,12 +68,12 @@ function Question({
   exam,
   number,
   fresh,
-  onSettled,
+  freshAt,
 }: {
   exam: ExamSummary;
   number: number;
   fresh: number | undefined;
-  onSettled: () => void;
+  freshAt: number;
 }) {
   const total = exam.voteCount;
   const votes =
@@ -76,11 +82,9 @@ function Question({
   return (
     <Link
       to={`/exam/${exam.id}`}
-      className={`ranked-row cs-q${fresh ? " cs-just-changed" : ""}`}
-      onAnimationEnd={(event) => {
-        if (event.target === event.currentTarget) onSettled();
-      }}
+      className="ranked-row cs-q"
     >
+      {fresh ? <span key={freshAt} className="cs-flash" aria-hidden="true" /> : null}
       <span className="cs-timing" aria-hidden="true" />
       <span className="cs-num cn-meta">{String(number).padStart(2, "0")}</span>
       <span className="cs-exam">
@@ -92,12 +96,14 @@ function Question({
           {fresh ? `, ${fresh} just now` : ""}
         </span>
       </span>
-      <Scale touching={exam.touchingCount} total={total} />
       <b className="cn-value">
         {total === 0 ? "–" : `${touchingShare(exam.touchingCount, total)}%`}
       </b>
-      <span className="cs-says">
-        {SHORT_VERDICT[verdictOf(exam.touchingCount, total)]}
+      <span className="cs-mark">
+        <Scale touching={exam.touchingCount} total={total} />
+        <span className="cs-says">
+          {SHORT_VERDICT[verdictOf(exam.touchingCount, total)]}
+        </span>
       </span>
     </Link>
   );
@@ -106,7 +112,6 @@ function Question({
 export function HomePage() {
   const [query, setQuery] = useState("");
   const [visibleCount, setVisibleCount] = useState(PAGE);
-  const [settled, setSettled] = useState<Set<number>>(new Set());
   const recent = useQuery({
     queryKey: ["recent-exams"],
     queryFn: getRecentExams,
@@ -117,15 +122,31 @@ export function HomePage() {
     queryKey: ["search-exams", query],
     queryFn: () => searchExams(query),
     enabled: query.trim().length > 0,
+    // Keep the last results mounted while the next keystroke loads, so
+    // rows don't flash empty and replay the bubble fill.
+    placeholderData: keepPreviousData,
     refetchInterval: query.trim().length > 0 ? 60000 : false,
     refetchIntervalInBackground: true,
   });
 
-  const fresh = useNewVotes(recent.data);
-  useEffect(() => setSettled(new Set()), [fresh]);
+  const fresh = useNewVotes(recent.data, recent.dataUpdatedAt);
+
+  // The API sorts by the latest vote, but a question's number is its
+  // identity on the sheet. Keep the order this visit first saw, so a vote
+  // settles its row in place. Exams that show up later go to the end.
+  const order = useRef(new Map<number, number>());
+  const recentItems = useMemo(() => {
+    const seen = order.current;
+    for (const exam of recent.data ?? []) {
+      if (!seen.has(exam.id)) seen.set(exam.id, seen.size);
+    }
+    return [...(recent.data ?? [])].sort(
+      (a, b) => (seen.get(a.id) ?? 0) - (seen.get(b.id) ?? 0),
+    );
+  }, [recent.data]);
 
   const searching = query.trim().length > 0;
-  const items = searching ? (search.data ?? []) : (recent.data ?? []);
+  const items = searching ? (search.data ?? []) : recentItems;
   const visibleItems = items.slice(0, visibleCount);
   const isLoading = searching ? search.isLoading : recent.isLoading;
 
@@ -211,12 +232,8 @@ export function HomePage() {
                 key={exam.id}
                 exam={exam}
                 number={index + 1}
-                fresh={
-                  searching || settled.has(exam.id) ? undefined : fresh.get(exam.id)
-                }
-                onSettled={() =>
-                  setSettled((current) => new Set(current).add(exam.id))
-                }
+                fresh={searching ? undefined : fresh.votes.get(exam.id)}
+                freshAt={fresh.at}
               />
             ))}
           </div>

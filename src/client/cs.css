@@ -48,13 +48,18 @@
 .cs-heads > :nth-child(4) { display: flex; justify-content: space-between; }
 .cs-heads > :nth-child(5) { text-align: right; }
 .cs-exam { display: grid; gap: 2px; min-width: 0; }
+/* Bubbles and verdict share a wrapper so a phone row can put them on one
+   line. On the desktop grid it steps aside. */
+.cs-mark { display: contents; }
+.cs-q > b { grid-column: 5; grid-row: 1; }
+.cs-mark > .cs-scale { grid-column: 4; grid-row: 1; }
+.cs-mark > .cs-says { grid-column: 6; grid-row: 1; }
 
 /* Timing mark: the notch a sheet reader counts rows by. It sits inside the
    row padding so it never meets the panel edge. */
 .cs-timing { width: 6px; height: 18px; border-radius: 2px; background: var(--surface-2); }
 
 .cs-search { padding: var(--space-4); border-bottom: 1px solid var(--surface-0); }
-.cs-search .input-icon { max-width: none; }
 
 /* The exam page's one number, at the scale of the question it answers. */
 .cs-answer { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--space-5); }
@@ -107,19 +112,27 @@
 .cs-scale > .is-filled { animation: cs-pencil var(--t-slow) var(--ease-out) backwards; animation-delay: calc(240ms + var(--i, 0) * 22ms); }
 
 /* M4: a count that changed under the reader lands at full strength and
-   bleeds out. The new count and "just now" text carry it without motion. */
+   bleeds out. The flash sits behind the row's content and is remounted per
+   change. Under reduced motion it isn't drawn; the new count and "just now"
+   text carry it. */
 @keyframes cs-settle { from { background-color: color-mix(in srgb, var(--mauve) 14%, var(--base)); } }
-.cs-just-changed { animation: cs-settle 1.6s cubic-bezier(.33, .6, .2, 1); }
+.cs-q, .cs-line { position: relative; isolation: isolate; }
+.cs-flash {
+  position: absolute; inset: 0; z-index: -1;
+  border-radius: inherit;
+  animation: cs-settle 1.6s cubic-bezier(.33, .6, .2, 1);
+}
 
 @media (prefers-reduced-motion: reduce) {
-  .cs-scale > .is-filled, .cs-group > i, .cs-just-changed { animation: none; }
+  .cs-scale > .is-filled, .cs-group > i { animation: none; }
+  .cs-flash { display: none; }
 }
 
 @media (max-width: 760px) {
   .cs-heads { display: none; }
   .cs-q {
     grid-template-columns: 6px 22px minmax(0, 1fr) auto;
-    grid-template-areas: "t n e s" "t . b b" "t . v v";
+    grid-template-areas: "t n e s" "t . m m";
     gap: var(--space-2) var(--space-3);
     padding-block: var(--space-4);
   }
@@ -127,16 +140,24 @@
   .cs-q > .cs-num { grid-area: n; }
   .cs-q > .cs-exam { grid-area: e; }
   .cs-q > b { grid-area: s; }
-  .cs-q > .cs-scale { grid-area: b; margin-top: var(--space-1); }
-  .cs-q > .cs-says { grid-area: v; }
+  .cs-q > .cs-mark {
+    grid-area: m;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: var(--space-3);
+    margin-top: var(--space-1);
+  }
+  .cs-mark > .cs-says { text-align: right; }
 }
 @media (max-width: 520px) {
-  .cs-q { grid-template-columns: 22px minmax(0, 1fr) auto; grid-template-areas: "n e s" ". b b" ". v v"; }
+  .cs-q { grid-template-columns: 22px minmax(0, 1fr) auto; grid-template-areas: "n e s" "m m m"; }
   .cs-q > .cs-timing { display: none; }
-  .cs-scale { gap: 6px; }
+  /* Small enough that the longest verdict fits beside the bubbles at 390. */
+  .cs-scale { gap: 4px; }
+  .cs-scale > .cs-bubble { width: 12px; height: 12px; }
   .cs-sheet { padding: var(--space-4); }
   .cs-line { grid-template-columns: minmax(0, 1fr) auto; row-gap: var(--space-2); }
   .cs-line > .cs-tally { grid-column: 1 / -1; grid-row: 2; gap: var(--space-2); }
+  .cs-line > .cs-tally:empty { display: none; }
   .cs-group { gap: 4px; }
   .cs-group > i { height: 24px; }
 }
