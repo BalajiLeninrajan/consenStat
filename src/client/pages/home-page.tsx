@@ -1,35 +1,112 @@
 import { useQuery } from "@tanstack/react-query";
-import { Search, AlertCircle } from "lucide-react";
+import { Search } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useState, type CSSProperties } from "react";
-import { getRecentExams, searchExams } from "../lib/api";
-import { Button } from "../ui/button";
-import { Card } from "../ui/card";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { getRecentExams, searchExams, type ExamSummary } from "../lib/api";
+import { SHORT_VERDICT, touchingShare, verdictOf } from "../lib/verdict";
 import { Input } from "../ui/input";
-import { Progress } from "../ui/progress";
+import { MarkingInstructions } from "../ui/marking-instructions";
 
-const ACCENT_COLORS = [
-  "var(--mauve)",
-  "var(--teal)",
-  "var(--yellow)",
-  "var(--blue)",
-  "var(--peach)",
-  "var(--pink)",
-];
+const PAGE = 8;
 
-const FINE_PRINT = [
-  "One browser, one vote. Don't be a slut for statistics.",
-  "Votes are anonymous. Your TA won't find you here.",
-  "Don't create duplicates, we have enough problems already.",
-];
+// How many votes each exam took since the previous fetch. The first load
+// has nothing to compare against, so nothing counts as new.
+function useNewVotes(items: ExamSummary[] | undefined) {
+  const previous = useRef<Map<number, number> | null>(null);
+  const [fresh, setFresh] = useState<Map<number, number>>(new Map());
 
-function voteShare(touching: number, total: number) {
-  return total === 0 ? 50 : Math.round((touching / total) * 100);
+  useEffect(() => {
+    if (!items) return;
+    const last = previous.current;
+    const next = new Map<number, number>();
+    if (last) {
+      for (const exam of items) {
+        const before = last.get(exam.id);
+        if (before !== undefined && exam.voteCount > before) {
+          next.set(exam.id, exam.voteCount - before);
+        }
+      }
+    }
+    previous.current = new Map(items.map((exam) => [exam.id, exam.voteCount]));
+    setFresh(next);
+  }, [items]);
+
+  return fresh;
+}
+
+// Ten bubbles, one per tenth of the class that said touching.
+function Scale({ touching, total }: { touching: number; total: number }) {
+  const filled = total === 0 ? 0 : Math.round((touching / total) * 10);
+  return (
+    <span
+      className="cs-scale"
+      role="img"
+      aria-label={
+        total === 0
+          ? "No votes yet"
+          : `${touchingShare(touching, total)}% of ${total} voters said touching`
+      }
+    >
+      {Array.from({ length: 10 }, (_, index) => (
+        <span
+          key={index}
+          className={index < filled ? "cs-bubble is-filled" : "cs-bubble"}
+          style={{ "--i": index } as CSSProperties}
+        />
+      ))}
+    </span>
+  );
+}
+
+function Question({
+  exam,
+  number,
+  fresh,
+  onSettled,
+}: {
+  exam: ExamSummary;
+  number: number;
+  fresh: number | undefined;
+  onSettled: () => void;
+}) {
+  const total = exam.voteCount;
+  const votes =
+    total === 0 ? "No votes yet" : `${total} ${total === 1 ? "vote" : "votes"}`;
+
+  return (
+    <Link
+      to={`/exam/${exam.id}`}
+      className={`ranked-row cs-q${fresh ? " cs-just-changed" : ""}`}
+      onAnimationEnd={(event) => {
+        if (event.target === event.currentTarget) onSettled();
+      }}
+    >
+      <span className="cs-timing" aria-hidden="true" />
+      <span className="cs-num cn-meta">{String(number).padStart(2, "0")}</span>
+      <span className="cs-exam">
+        <strong className="cn-truncate">
+          {exam.courseCode} {exam.examName}
+        </strong>
+        <span className="cn-meta">
+          {exam.termLabel} · {votes}
+          {fresh ? `, ${fresh} just now` : ""}
+        </span>
+      </span>
+      <Scale touching={exam.touchingCount} total={total} />
+      <b className="cn-value">
+        {total === 0 ? "–" : `${touchingShare(exam.touchingCount, total)}%`}
+      </b>
+      <span className="cs-says">
+        {SHORT_VERDICT[verdictOf(exam.touchingCount, total)]}
+      </span>
+    </Link>
+  );
 }
 
 export function HomePage() {
   const [query, setQuery] = useState("");
-  const [visibleCount, setVisibleCount] = useState(5);
+  const [visibleCount, setVisibleCount] = useState(PAGE);
+  const [settled, setSettled] = useState<Set<number>>(new Set());
   const recent = useQuery({
     queryKey: ["recent-exams"],
     queryFn: getRecentExams,
@@ -44,152 +121,153 @@ export function HomePage() {
     refetchIntervalInBackground: true,
   });
 
-  const items = query.trim() ? (search.data ?? []) : (recent.data ?? []);
-  const featured = !query.trim() && items.length > 0 ? items[0] : null;
-  const listItems = featured ? items.slice(1) : items;
-  const visibleItems = listItems.slice(0, visibleCount);
-  const hasMore = visibleCount < listItems.length;
-  const isLoading = recent.isLoading || search.isLoading;
+  const fresh = useNewVotes(recent.data);
+  useEffect(() => setSettled(new Set()), [fresh]);
+
+  const searching = query.trim().length > 0;
+  const items = searching ? (search.data ?? []) : (recent.data ?? []);
+  const visibleItems = items.slice(0, visibleCount);
+  const isLoading = searching ? search.isLoading : recent.isLoading;
 
   return (
-    <div className="flex flex-col gap-6 sm:gap-8">
-      <div className="input-icon">
-        <Search aria-hidden="true" />
-        <Input
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          placeholder="Search for your exam"
-          aria-label="Search for your exam"
-          className="input-lg"
-        />
-      </div>
+    <div className="page-enter cs-page">
+      <header className="cs-intro">
+        <h1 className="cn-display">
+          How did your <em>exam</em> go?
+        </h1>
+        <p className="cn-lede cn-m-0">
+          Every Waterloo exam is a question on this sheet. The class fills in
+          the bubbles, anonymously, one browser at a time.
+        </p>
+      </header>
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1.55fr)_minmax(0,0.75fr)] lg:gap-8">
-        <div className="flex min-w-0 flex-col gap-6">
-          {featured && (
-            <Link
-              to={`/exam/${featured.id}`}
-              className="block"
-              style={{ "--accent": ACCENT_COLORS[0] } as CSSProperties}
-            >
-              <article className="accent-card flex flex-col gap-5 p-6 sm:p-8">
-                <div>
-                  <div className="flex flex-wrap items-center justify-between gap-3">
-                    <span className="cn-label">{featured.courseCode}</span>
-                    <span className="chip">
-                      {featured.voteCount} total victims
-                    </span>
-                  </div>
-                  <h2 className="cn-display is-sm mt-2">{featured.examName}</h2>
-                  <p className="cn-meta mt-3">{featured.termLabel}</p>
-                </div>
-                <div className="flex flex-col gap-3">
-                  <div className="stat is-inline">
-                    <span>Consensus</span>
-                    <b>
-                      {voteShare(featured.touchingCount, featured.voteCount)}% consensual
-                    </b>
-                  </div>
-                  <Progress
-                    className="is-lg"
-                    value={voteShare(featured.touchingCount, featured.voteCount)}
-                  />
-                </div>
-              </article>
-            </Link>
-          )}
+      <section className="panel" aria-labelledby="sheet-title">
+        <header className="panel-header">
+          <h2 id="sheet-title" className="cn-title">Answer sheet</h2>
+          <div className="band-actions cn-gap-16 cn-meta">
+            <span className="cn-row">
+              <span className="cs-bubble is-filled" aria-hidden="true" />
+              Touching
+            </span>
+            <span className="cn-row">
+              <span className="cs-bubble" aria-hidden="true" />
+              Touchy
+            </span>
+          </div>
+        </header>
 
-          <div className="grid gap-4 md:grid-cols-2">
-            {isLoading && (
-              <div className="empty-state col-span-full animate-pulse">
-                <strong>Scanning for victims…</strong>
-              </div>
-            )}
-
-            {items.length === 0 && !isLoading && (
-              <div className="empty-state col-span-full">
-                <strong>No suffering detected.</strong>
-                <span>Be the first to complain.</span>
-                <Link to="/create" className="btn btn-primary mt-2">
-                  Submit disaster
-                </Link>
-              </div>
-            )}
-
-            {visibleItems.map((exam, index) => {
-              const share = voteShare(exam.touchingCount, exam.voteCount);
-              return (
-                <Link
-                  key={exam.id}
-                  to={`/exam/${exam.id}`}
-                  className="block"
-                  style={
-                    {
-                      "--accent":
-                        ACCENT_COLORS[(index + 1) % ACCENT_COLORS.length],
-                    } as CSSProperties
-                  }
-                >
-                  <article className="accent-card flex h-full flex-col justify-between gap-5">
-                    <div>
-                      <span className="cn-label">{exam.courseCode}</span>
-                      <h3 className="cn-title mt-2">{exam.examName}</h3>
-                      <p className="cn-meta mt-2">{exam.termLabel}</p>
-                    </div>
-                    <div className="flex flex-col gap-2">
-                      <div className="stat is-inline">
-                        <span>Consensus</span>
-                        <b>{share}%</b>
-                      </div>
-                      <Progress value={share} />
-                      <p className="cn-meta">{exam.voteCount} victims</p>
-                    </div>
-                  </article>
-                </Link>
-              );
-            })}
-
-            {hasMore && (
-              <div className="col-span-full">
-                <Button
-                  variant="secondary"
-                  onClick={() => setVisibleCount((current) => current + 5)}
-                >
-                  Show more
-                </Button>
-              </div>
-            )}
+        <div className="cs-search">
+          <div className="input-icon">
+            <Search aria-hidden="true" />
+            <Input
+              value={query}
+              onChange={(event) => {
+                setQuery(event.target.value);
+                setVisibleCount(PAGE);
+              }}
+              placeholder="Search for your exam"
+              aria-label="Search for your exam"
+              className="input-lg"
+            />
           </div>
         </div>
 
-        <aside className="flex min-w-0 flex-col gap-6 lg:gap-8">
-          <Card className="is-tilted">
-            <h2 className="cn-title">Fine print</h2>
-            <ul className="mt-5 flex flex-col gap-4">
-              {FINE_PRINT.map((rule, index) => (
-                <li key={rule} className="flex items-start gap-3">
-                  <span className="mark">
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                  <span className="cn-copy">{rule}</span>
-                </li>
-              ))}
-            </ul>
-          </Card>
+        {items.length > 0 && (
+          <div className="cs-heads cn-label" aria-hidden="true">
+            <span />
+            <span>No.</span>
+            <span>Exam</span>
+            <span>
+              <span>0%</span>
+              <span>Class answer</span>
+              <span>100%</span>
+            </span>
+            <span>Touching</span>
+            <span>Verdict</span>
+          </div>
+        )}
 
-          <Card>
-            <div className="flex items-center gap-3">
-              <AlertCircle className="cn-icon-lg text-mauve" />
-              <h2 className="cn-title">What is this?</h2>
-            </div>
-            <p className="cn-copy mt-4">
-              A crowd-sourced pulse of Waterloo&apos;s academic brutality. Find
-              out if you&apos;re the only one who got railed, or if it was a
-              collective execution.
-            </p>
-          </Card>
-        </aside>
-      </div>
+        {isLoading && (
+          <div className="empty-state">
+            <strong>Scanning for victims…</strong>
+          </div>
+        )}
+
+        {!isLoading && items.length === 0 && (
+          <div className="empty-state">
+            <strong>No suffering detected.</strong>
+            <span>
+              {searching
+                ? "Nothing on the sheet matches that. List it and be the first to complain."
+                : "Be the first to complain."}
+            </span>
+          </div>
+        )}
+
+        {visibleItems.length > 0 && (
+          <div>
+            {visibleItems.map((exam, index) => (
+              <Question
+                key={exam.id}
+                exam={exam}
+                number={index + 1}
+                fresh={
+                  searching || settled.has(exam.id) ? undefined : fresh.get(exam.id)
+                }
+                onSettled={() =>
+                  setSettled((current) => new Set(current).add(exam.id))
+                }
+              />
+            ))}
+          </div>
+        )}
+
+        {items.length > 0 && (
+          <footer className="panel-footer">
+            <span className="cn-meta">
+              {visibleItems.length} of {items.length}{" "}
+              {items.length === 1 ? "question" : "questions"}
+            </span>
+            {visibleCount < items.length && (
+              <button
+                type="button"
+                className="btn btn-secondary is-sm"
+                onClick={() => setVisibleCount((current) => current + PAGE)}
+              >
+                Show more
+              </button>
+            )}
+          </footer>
+        )}
+      </section>
+
+      <aside className="cs-aside">
+        <MarkingInstructions>
+          <div
+            className="cn-row cn-wrap cn-gap-24 cn-meta border-t border-surface-0 pt-4"
+            aria-hidden="true"
+          >
+            <span className="cn-row">
+              <span className="cs-bubble is-filled" />
+              Right
+            </span>
+            <span className="cn-row">
+              <span className="cs-bubble">✓</span>
+              <span className="cs-bubble">✕</span>
+              <span className="cs-bubble">·</span>
+              Wrong
+            </span>
+          </div>
+        </MarkingInstructions>
+        <section className="cn-stack cn-gap-8">
+          <h2 className="cn-name cn-m-0">What is this?</h2>
+          <p className="cn-copy cn-m-0">
+            A crowd-sourced pulse of Waterloo&apos;s academic brutality. Find
+            out if you&apos;re the only one who got railed, or if it was a
+            collective execution.
+          </p>
+        </section>
+      </aside>
     </div>
   );
 }
