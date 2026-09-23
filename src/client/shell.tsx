@@ -25,7 +25,7 @@ export function AppShell() {
         </div>
       </main>
 
-      <footer className="footer-neu">
+      <footer className="page-footer">
         <span>ConsenStat</span>
         <p>© 2026 · Made with hate in Waterloo</p>
       </footer>

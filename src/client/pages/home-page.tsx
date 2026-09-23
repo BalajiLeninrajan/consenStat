@@ -73,26 +73,25 @@ export function HomePage() {
               style={{ "--accent": ACCENT_COLORS[0] } as CSSProperties}
             >
               <article className="accent-card flex flex-col gap-5 p-6 sm:p-8">
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <span className="eyebrow mb-0">Latest trauma</span>
-                  <span className="chip">
-                    {featured.voteCount} total victims
-                  </span>
-                </div>
                 <div>
-                  <span className="cn-label cn-text-accent">{featured.courseCode}</span>
-                  <h2 className="cn-display-sm mt-2">{featured.examName}</h2>
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <span className="cn-label cn-text-accent">{featured.courseCode}</span>
+                    <span className="chip">
+                      {featured.voteCount} total victims
+                    </span>
+                  </div>
+                  <h2 className="cn-display is-sm mt-2">{featured.examName}</h2>
                   <p className="cn-meta mt-3">{featured.termLabel}</p>
                 </div>
                 <div className="flex flex-col gap-3">
-                  <div className="stat-row">
+                  <div className="stat is-inline">
                     <span>Consensus</span>
                     <b>
                       {voteShare(featured.touchingCount, featured.voteCount)}% consensual
                     </b>
                   </div>
                   <Progress
-                    className="is-tall"
+                    className="is-lg"
                     value={voteShare(featured.touchingCount, featured.voteCount)}
                   />
                 </div>
@@ -138,7 +137,7 @@ export function HomePage() {
                       <p className="cn-meta mt-2">{exam.termLabel}</p>
                     </div>
                     <div className="flex flex-col gap-2">
-                      <div className="stat-row">
+                      <div className="stat is-inline">
                         <span>Consensus</span>
                         <b>{share}%</b>
                       </div>
@@ -170,7 +169,7 @@ export function HomePage() {
             <ul className="mt-5 flex flex-col gap-4">
               {FINE_PRINT.map((rule, index) => (
                 <li key={rule} className="flex items-start gap-3">
-                  <span className="mark-solid">
+                  <span className="mark">
                     {String(index + 1).padStart(2, "0")}
                   </span>
                   <span className="cn-copy">{rule}</span>

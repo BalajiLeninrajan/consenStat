@@ -99,13 +99,12 @@ export function CreatePage() {
 
   return (
     <div className="flex flex-col gap-5 sm:gap-6">
-      <Link to="/" className="btn btn-secondary back-link">
+      <Link to="/" className="btn btn-ghost is-sm self-start">
         <ArrowLeft aria-hidden="true" />
         Back to list
       </Link>
 
       <Card className="mx-auto w-full max-w-[62rem] p-6 sm:p-9">
-        <p className="eyebrow">New submission</p>
         <h1 className="display-title max-w-[18ch]">
           Add new <em>trauma</em> to the collection.
         </h1>

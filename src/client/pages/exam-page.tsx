@@ -39,7 +39,7 @@ function voteStorageKey(examId: string) {
 
 function BackLink() {
   return (
-    <Link to="/" className="btn btn-secondary back-link">
+    <Link to="/" className="btn btn-ghost is-sm self-start">
       <ArrowLeft aria-hidden="true" />
       Back to list
     </Link>
@@ -190,24 +190,23 @@ export function ExamPage() {
 
       <div className="grid gap-5 sm:gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
         <Card>
-          <p className="eyebrow">
+          <h1 className="display-title">{exam.data.examName}</h1>
+          <p className="cn-meta mt-3">
             {exam.data.courseCode} · {exam.data.termLabel}
           </p>
-          <h1 className="display-title">{exam.data.examName}</h1>
 
           <div className="well mt-8 p-5 sm:p-7">
-            <div className="stat-row">
+            <div className="stat is-inline">
               <span>Consensus</span>
               <b>{share}% consensual</b>
             </div>
-            <Progress className="is-tall mt-3" value={share} />
+            <Progress className="is-lg mt-3" value={share} />
 
-            {/* --accent deliberately re-keyed to green/red (Mocha tokens
-                outside the 6-color accent cycle) for the semantic
-                fair/unfair pairing — .metric.is-hero reads --accent. */}
+            {/* .stat.is-lg colors its value with --accent, so each side
+                re-keys it to the green or red of its verdict. */}
             <div className="mt-6 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center">
               <div
-                className="metric is-hero"
+                className="stat is-lg"
                 style={{ "--accent": "var(--green)" } as CSSProperties}
               >
                 <span>Fair</span>
@@ -217,7 +216,7 @@ export function ExamPage() {
                 VS
               </span>
               <div
-                className="metric is-hero items-end text-right"
+                className="stat is-lg items-end text-right"
                 style={{ "--accent": "var(--red)" } as CSSProperties}
               >
                 <span>Fucked</span>
@@ -252,7 +251,7 @@ export function ExamPage() {
                 the semantic cn-tone-* set) so the muted state doesn't read
                 as an error. */}
             <span
-              className={`chip-tone shrink-0${liveStatus === "live" ? " cn-tone-green" : ""}`}
+              className={`tag shrink-0${liveStatus === "live" ? " cn-tone-green" : ""}`}
               style={
                 liveStatus === "live"
                   ? undefined
