@@ -99,7 +99,7 @@ export function CreatePage() {
 
   return (
     <div className="flex flex-col gap-5 sm:gap-6">
-      <Link to="/" className="btn btn-ghost is-sm self-start">
+      <Link to="/" className="btn-text inline-flex items-center gap-2 self-start">
         <ArrowLeft aria-hidden="true" />
         Back to list
       </Link>

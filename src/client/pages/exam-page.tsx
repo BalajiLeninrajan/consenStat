@@ -39,7 +39,7 @@ function voteStorageKey(examId: string) {
 
 function BackLink() {
   return (
-    <Link to="/" className="btn btn-ghost is-sm self-start">
+    <Link to="/" className="btn-text inline-flex items-center gap-2 self-start">
       <ArrowLeft aria-hidden="true" />
       Back to list
     </Link>
@@ -212,7 +212,7 @@ export function ExamPage() {
                 <span>Fair</span>
                 <strong>{exam.data.touchingCount}</strong>
               </div>
-              <span className="cn-microlabel cn-text-overlay-0">
+              <span className="cn-microlabel cn-text-overlay-2">
                 VS
               </span>
               <div
@@ -247,15 +247,14 @@ export function ExamPage() {
                 How was the test? Be honest, no one is watching.
               </p>
             </div>
-            {/* Offline keeps a neutral overlay-0 tone (deliberately outside
-                the semantic cn-tone-* set) so the muted state doesn't read
-                as an error. */}
+            {/* Offline uses a neutral overlay-2 tone (outside the semantic
+                cn-tone-* set) so the muted state doesn't read as an error. */}
             <span
               className={`tag shrink-0 self-start${liveStatus === "live" ? " cn-tone-green" : ""}`}
               style={
                 liveStatus === "live"
                   ? undefined
-                  : ({ "--tone": "var(--overlay-0)" } as CSSProperties)
+                  : ({ "--tone": "var(--overlay-2)" } as CSSProperties)
               }
             >
               {liveStatus === "live" && <span className="live-dot" />}
