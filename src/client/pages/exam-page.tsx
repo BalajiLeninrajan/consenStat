@@ -251,7 +251,7 @@ export function ExamPage() {
                 the semantic cn-tone-* set) so the muted state doesn't read
                 as an error. */}
             <span
-              className={`tag shrink-0${liveStatus === "live" ? " cn-tone-green" : ""}`}
+              className={`tag shrink-0 self-start${liveStatus === "live" ? " cn-tone-green" : ""}`}
               style={
                 liveStatus === "live"
                   ? undefined

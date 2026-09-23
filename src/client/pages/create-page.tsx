@@ -193,15 +193,11 @@ export function CreatePage() {
             </div>
           )}
 
-          <div className="flex flex-col gap-4 border-t border-surface-0 pt-6 md:flex-row md:items-center md:justify-between">
+          <div className="flex flex-col items-start gap-4 border-t border-surface-0 pt-6 md:flex-row md:items-center md:justify-between">
             <p className="cn-meta max-w-md">
               We&apos;ll check if this violation has already been reported.
             </p>
-            <Button
-              type="submit"
-              disabled={!canSubmit || isBusy}
-              className="w-full md:w-auto md:min-w-[13rem]"
-            >
+            <Button type="submit" disabled={!canSubmit || isBusy}>
               {createMutation.isPending ? "Logging…" : "Commit exam"}
             </Button>
           </div>
@@ -249,7 +245,7 @@ export function CreatePage() {
                 <article className="accent-card flex flex-col gap-2">
                   <h3 className="cn-title">{candidate.examName}</h3>
                   <p className="cn-meta">{candidate.termLabel}</p>
-                  <p className="cn-label cn-text-accent mt-1">
+                  <p className="cn-label mt-1">
                     {candidate.matchType} · {Math.round(candidate.score * 100)}% match
                   </p>
                 </article>
@@ -257,7 +253,7 @@ export function CreatePage() {
             ))}
           </div>
 
-          <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
+          <div className="flex flex-wrap justify-end gap-3">
             <Button variant="secondary" onClick={() => setShowDialog(false)}>
               Back out
             </Button>

@@ -75,7 +75,7 @@ export function HomePage() {
               <article className="accent-card flex flex-col gap-5 p-6 sm:p-8">
                 <div>
                   <div className="flex flex-wrap items-center justify-between gap-3">
-                    <span className="cn-label cn-text-accent">{featured.courseCode}</span>
+                    <span className="cn-label">{featured.courseCode}</span>
                     <span className="chip">
                       {featured.voteCount} total victims
                     </span>
@@ -132,7 +132,7 @@ export function HomePage() {
                 >
                   <article className="accent-card flex h-full flex-col justify-between gap-5">
                     <div>
-                      <span className="cn-label cn-text-accent">{exam.courseCode}</span>
+                      <span className="cn-label">{exam.courseCode}</span>
                       <h3 className="cn-title mt-2">{exam.examName}</h3>
                       <p className="cn-meta mt-2">{exam.termLabel}</p>
                     </div>
@@ -142,7 +142,7 @@ export function HomePage() {
                         <b>{share}%</b>
                       </div>
                       <Progress value={share} />
-                      <p className="cn-meta">{exam.voteCount} VICTIMS</p>
+                      <p className="cn-meta">{exam.voteCount} victims</p>
                     </div>
                   </article>
                 </Link>
@@ -153,7 +153,6 @@ export function HomePage() {
               <div className="col-span-full">
                 <Button
                   variant="secondary"
-                  className="w-full sm:w-auto"
                   onClick={() => setVisibleCount((current) => current + 5)}
                 >
                   Show more
@@ -188,9 +187,6 @@ export function HomePage() {
               out if you&apos;re the only one who got railed, or if it was a
               collective execution.
             </p>
-            <Link to="/create" className="btn btn-primary mt-6 w-full">
-              List new exam
-            </Link>
           </Card>
         </aside>
       </div>
