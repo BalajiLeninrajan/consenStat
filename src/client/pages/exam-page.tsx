@@ -250,7 +250,7 @@ export function ExamPage() {
     <div key={id} className="page-enter cs-page" style={{ "--cs-aside-rows": 3 } as CSSProperties}>
       <header className="cs-intro">
         {back}
-        <h1 className="cn-display is-sm">
+        <h1 className="cn-display is-sm ph-sensitive">
           Did the {data.courseCode} {inSentence(data.examName)} wreck{" "}
           <em>everyone</em>?
         </h1>

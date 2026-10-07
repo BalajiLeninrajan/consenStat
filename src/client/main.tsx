@@ -20,7 +20,9 @@ posthog.init(import.meta.env.VITE_PUBLIC_POSTHOG_KEY, {
   defaults: "2026-05-30",
   cookieless_mode: "always",
   // HashRouter only changes location.hash, which the default
-  // "history_change" pageviews ignore.
+  // "history_change" pageviews ignore. defaults from 2026-06-25 on also
+  // set disable_capture_url_hashes, which strips the hash; a bump needs
+  // disable_capture_url_hashes: false or every pageview reads "/".
   capture_pageview: { path: true, hash: true },
 });
 

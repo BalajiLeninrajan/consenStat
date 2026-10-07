@@ -89,7 +89,8 @@ function Question({
       <span className="cs-timing" aria-hidden="true" />
       <span className="cs-num cn-meta">{String(number).padStart(2, "0")}</span>
       <span className="cs-exam">
-        <strong className="cn-truncate">
+        {/* ph-sensitive keeps visitor-typed exam names out of autocapture. */}
+        <strong className="cn-truncate ph-sensitive">
           {exam.courseCode} {exam.examName}
         </strong>
         <span className="cn-meta">

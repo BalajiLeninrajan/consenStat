@@ -247,7 +247,7 @@ export function CreatePage() {
                 style={{ "--accent": "var(--peach)" } as CSSProperties}
               >
                 <article className="accent-card flex flex-col gap-2">
-                  <h3 className="cn-title">{candidate.examName}</h3>
+                  <h3 className="cn-title ph-sensitive">{candidate.examName}</h3>
                   <p className={`cn-meta ${termClass(candidate.termLabel)}`}>{candidate.termLabel}</p>
                   <p className="cn-label mt-1">
                     {candidate.matchType} · {Math.round(candidate.score * 100)}% match
