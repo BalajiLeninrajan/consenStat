@@ -53,7 +53,6 @@ export function CreatePage() {
     onSuccess(data) {
       setDuplicates(data);
       if (data.decision !== "ok") {
-        posthog.capture("duplicate_flagged", { page: "create", decision: data.decision });
         setShowDialog(true);
       }
     },
@@ -62,7 +61,7 @@ export function CreatePage() {
   const createMutation = useMutation({
     mutationFn: createExam,
     onSuccess(data) {
-      posthog.capture("exam_created", { page: "create" });
+      posthog.capture("create_exam", { page: "create" });
       toast.push("Disaster logged successfully");
       navigate(`/exam/${data.id}`);
     },

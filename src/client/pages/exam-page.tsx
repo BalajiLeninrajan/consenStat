@@ -187,7 +187,7 @@ export function ExamPage() {
       ownVoteAt.current = Date.now();
     },
     onSuccess(data) {
-      posthog.capture("vote_cast", { page: "exam", button: data.yourVote.toLowerCase() });
+      posthog.capture("cast_vote", { page: "exam", button: data.yourVote.toLowerCase() });
       setSelectedVote(data.yourVote);
       window.localStorage.setItem(voteStorageKey(id), data.yourVote);
       queryClient.setQueryData<ExamDetail>(["exam", id], (current) =>
