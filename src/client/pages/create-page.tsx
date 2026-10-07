@@ -1,3 +1,4 @@
+import { usePostHog } from "@posthog/react";
 import { useMutation } from "@tanstack/react-query";
 import { AlertTriangle, ArrowLeft } from "lucide-react";
 import { FormEvent, useMemo, useState, type CSSProperties } from "react";
@@ -45,12 +46,14 @@ export function CreatePage() {
   const [showDialog, setShowDialog] = useState(false);
   const navigate = useNavigate();
   const toast = useToast();
+  const posthog = usePostHog();
 
   const duplicateMutation = useMutation({
     mutationFn: duplicateCheck,
     onSuccess(data) {
       setDuplicates(data);
       if (data.decision !== "ok") {
+        posthog.capture("duplicate_flagged", { page: "create", decision: data.decision });
         setShowDialog(true);
       }
     },
@@ -59,6 +62,7 @@ export function CreatePage() {
   const createMutation = useMutation({
     mutationFn: createExam,
     onSuccess(data) {
+      posthog.capture("exam_created", { page: "create" });
       toast.push("Disaster logged successfully");
       navigate(`/exam/${data.id}`);
     },
