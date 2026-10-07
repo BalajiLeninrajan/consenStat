@@ -1,3 +1,4 @@
+import { usePostHog } from "@posthog/react";
 import { useMutation } from "@tanstack/react-query";
 import { AlertTriangle, ArrowLeft } from "lucide-react";
 import { FormEvent, useMemo, useState, type CSSProperties } from "react";
@@ -45,6 +46,7 @@ export function CreatePage() {
   const [showDialog, setShowDialog] = useState(false);
   const navigate = useNavigate();
   const toast = useToast();
+  const posthog = usePostHog();
 
   const duplicateMutation = useMutation({
     mutationFn: duplicateCheck,
@@ -59,6 +61,7 @@ export function CreatePage() {
   const createMutation = useMutation({
     mutationFn: createExam,
     onSuccess(data) {
+      posthog.capture("create_exam", { page: "create" });
       toast.push("Disaster logged successfully");
       navigate(`/exam/${data.id}`);
     },
@@ -244,7 +247,7 @@ export function CreatePage() {
                 style={{ "--accent": "var(--peach)" } as CSSProperties}
               >
                 <article className="accent-card flex flex-col gap-2">
-                  <h3 className="cn-title">{candidate.examName}</h3>
+                  <h3 className="cn-title ph-sensitive">{candidate.examName}</h3>
                   <p className={`cn-meta ${termClass(candidate.termLabel)}`}>{candidate.termLabel}</p>
                   <p className="cn-label mt-1">
                     {candidate.matchType} · {Math.round(candidate.score * 100)}% match
