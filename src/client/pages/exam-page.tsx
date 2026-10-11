@@ -1,3 +1,4 @@
+import { usePostHog } from "@posthog/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowLeft } from "lucide-react";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
@@ -76,6 +77,7 @@ export function ExamPage() {
   const { id = "" } = useParams();
   const queryClient = useQueryClient();
   const toast = useToast();
+  const posthog = usePostHog();
   const [selectedVote, setSelectedVote] = useState<VoteType | null>(null);
   const [liveStatus, setLiveStatus] = useState<"connecting" | "live" | "offline">(
     "connecting",
@@ -185,6 +187,7 @@ export function ExamPage() {
       ownVoteAt.current = Date.now();
     },
     onSuccess(data) {
+      posthog.capture("cast_vote", { page: "exam", button: data.yourVote.toLowerCase() });
       setSelectedVote(data.yourVote);
       window.localStorage.setItem(voteStorageKey(id), data.yourVote);
       queryClient.setQueryData<ExamDetail>(["exam", id], (current) =>
@@ -247,7 +250,7 @@ export function ExamPage() {
     <div key={id} className="page-enter cs-page" style={{ "--cs-aside-rows": 3 } as CSSProperties}>
       <header className="cs-intro">
         {back}
-        <h1 className="cn-display is-sm">
+        <h1 className="cn-display is-sm ph-sensitive">
           Did the {data.courseCode} {inSentence(data.examName)} wreck{" "}
           <em>everyone</em>?
         </h1>
